@@ -1,26 +1,32 @@
-import type { MarkerSegment } from "@/atoms/player"
+import { memo } from "react"
+
+import type { MarkerSegment as MarkerSegmentType } from "@/atoms/player"
 
 import { cn } from "@/lib/utils"
 
 type Props = {
-  segment: MarkerSegment
+  segment: MarkerSegmentType
+  isPast: boolean
 }
 
-export function MarkerSegment({ segment }: Props) {
+export const MarkerSegment = memo(function MarkerSegment({ segment, isPast }: Props) {
   return (
     <div
       className={cn(
         "transition-all",
-        // index > 0 ? 'mt-8' : '',
+        isPast && "opacity-50 scale-90"
       )}
     >
-
-      <span className={cn(
-        "font-normal text-base text-muted-foreground transition-colors",
-        // selectedIndex && index < selectedIndex ? 'text-muted-foreground/50' : '',
-      )}>
+      <span
+        className="font-normal text-base text-muted-foreground transition-colors"
+      >
         {segment.text}
       </span>
     </div>
   )
-}
+}, (prev, next) => {
+  return (
+    prev.segment === next.segment &&
+    prev.isPast === next.isPast
+  )
+})

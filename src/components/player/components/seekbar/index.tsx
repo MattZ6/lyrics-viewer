@@ -1,4 +1,5 @@
 import {
+  memo,
   useCallback,
   useEffect,
   useLayoutEffect,
@@ -7,6 +8,8 @@ import {
   type PointerEvent,
 } from 'react'
 import { useAtom, useAtomValue } from 'jotai'
+
+import { useTrackMarkerSections } from '@/hooks/use-track-marker-sections'
 
 import {
   audioRefAtom,
@@ -195,14 +198,15 @@ export function SeekBar() {
       onPointerDown={handleBarPointerDown}
     >
       {/* Barra de fundo */}
-      <div className="w-full h-1.5 bg-primary/10 rounded-full overflow-hidden cursor-pointer relative">
+      <div className="w-full h-1.5 bg-primary/10 rounded overflow-hidden cursor-pointer relative">
+
         {/* Barra de preview (hover) */}
         {previewPercentage !== null && !isDragging && (
           <div
-            className="absolute left-0 top-0 w-full h-full rounded-full bg-primary/15 pointer-events-none"
+            className="absolute left-0 top-0 w-full h-full rounded-full bg-primary/15 pointer-events-none transition-opacity"
             style={{
               transform: `translateX(-${100 - previewPercentage}%)`,
-              zIndex: 1,
+              // zIndex: 1,
             }}
           />
         )}
@@ -210,7 +214,7 @@ export function SeekBar() {
         {/* Barra de progresso (real/drag) */}
         <div
           className={cn(
-            "relative h-full rounded-full transition-colors z-10",
+            "relative h-full rounded-full transition-colors z-1",
             isDragging ? 'bg-orange-700' : 'bg-orange-600',
           )}
           style={{
@@ -221,11 +225,14 @@ export function SeekBar() {
 
       {seekFeedback && (
         <div
-          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-full text-sm font-medium px-2 py-1 rounded shadow-md bg-accent/10 animate-fade-out pointer-events-none z-20"
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-full text-sm font-medium px-2 py-1 rounded shadow-md bg-accent/10 animate-fade-out pointer-events-none"
         >
           {seekFeedback}
         </div>
       )}
+
+      {/* Divisões baseadas em markers */}
+      <MarkerDivisions />
 
       {/* Thumb */}
       <button
@@ -233,7 +240,7 @@ export function SeekBar() {
         ref={thumbRef}
         type="button"
         className={cn(
-          "absolute top-1/2 size-4 bg-orange-600 border rounded-full z-10 opacity-50",
+          "absolute top-1/2 size-4 bg-orange-600 border rounded-full opacity-50 z-20",
           showThumb && !isDragging && !isSeekingTransiently && 'transition-transform',
           isDragging ? 'cursor-grabbing' : 'cursor-pointer'
         )}
@@ -244,6 +251,59 @@ export function SeekBar() {
         tabIndex={-1}
         aria-hidden
       />
+    </div>
+  )
+}
+
+export const MarkerDivisions = memo(function MarkerDivisions() {
+  const markerSections = useTrackMarkerSections()
+  const duration = useAtomValue(durationAtom)
+
+  if (!markerSections.length || duration === 0) {
+    return null
+  }
+
+  return (
+    <>
+      {markerSections.map((section, index) => (
+        <MarkerDivision
+          key={index}
+          label={section.label}
+          left={(section.startTime / duration) * 100}
+          width={((section.endTime - section.startTime) / duration) * 100}
+        />
+      ))}
+    </>
+  )
+})
+
+type MarkerDivisionProps = {
+  label: string
+  left: number
+  width: number
+}
+
+export function MarkerDivision({ label, left, width }: MarkerDivisionProps) {
+  const [showLabel, setShowLabel] = useState(false)
+
+  return (
+    <div
+      key={`${label}_${left}`}
+      className={cn(
+        "absolute top-0 h-full border-r-2 border-background z-2 flex items-end justify-center",
+      )}
+      style={{ left: `${left}%`, width: `${width}%` }}
+      onMouseEnter={() => setShowLabel(true)}
+      onMouseLeave={() => setShowLabel(false)}
+    >
+      <span
+        className={cn(
+          "absolute -top-0.5 left-0 text-xs text-muted-foreground pointer-events-none opacity-0 translate-y-1 transition-all",
+          showLabel ? "opacity-100 translate-y-0" : "",
+        )}
+      >
+        {label}
+      </span>
     </div>
   )
 }
