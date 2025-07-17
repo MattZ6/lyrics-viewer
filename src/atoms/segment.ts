@@ -3,15 +3,22 @@ import { atom } from 'jotai'
 import { currentTrackAtom, currentTimeAtom } from './player'
 
 // 🔁 Índice do segmento ativo (com base no tempo atual)
-export const currentSegmentIndexAtom = atom(get => {
+export const currentSegmentIndexAtom = atom((get) => {
   const track = get(currentTrackAtom)
   const time = get(currentTimeAtom)
 
-  if (!track) {
-    return -1
+  if (!track) return -1
+
+  const segments = track.segments
+
+  for (let i = segments.length - 1; i >= 0; i--) {
+    const segment = segments[i]
+    if (segment.type === 'lyric' && segment.time <= time) {
+      return i
+    }
   }
 
-  return track.segments.findIndex(segment => segment.type === 'lyric' && time >= segment.time)
+  return -1
 })
 
 // 🔁 Segmento atual completo (opcional)
@@ -20,3 +27,4 @@ export const currentSegmentAtom = atom(get => {
   const index = get(currentSegmentIndexAtom)
   return track?.segments[index] ?? null
 })
+

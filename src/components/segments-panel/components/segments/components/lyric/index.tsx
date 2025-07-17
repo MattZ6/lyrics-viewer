@@ -1,15 +1,17 @@
-import { useCallback } from "react"
+import { memo, useCallback } from "react"
 import { useAtomValue } from "jotai"
 
-import { audioRefAtom, type LyricSegment } from "@/atoms/player"
+import { audioRefAtom, type LyricSegment as LyricSegmentType } from "@/atoms/player"
 
 import { cn } from "@/lib/utils"
 
 type Props = {
-  segment: LyricSegment
+  segment: LyricSegmentType
+  isPast: boolean
+  isSelected: boolean
 }
 
-export function LyricSegment({ segment }: Props) {
+export const LyricSegment = memo(function LyricSegment({ segment, isPast, isSelected }: Props) {
   const audioRef = useAtomValue(audioRefAtom)
 
   const handleMoveToSegmentTime = useCallback(() => {
@@ -26,8 +28,8 @@ export function LyricSegment({ segment }: Props) {
         // // selectedIndex && index < selectedIndex - 1 ? 'scale-95' : '',
         // // selectedIndex && index < selectedIndex - 2 ? 'scale-90' : '',
         // // selectedIndex && index < selectedIndex - 3 ? 'scale-85' : '',
-        // selectedIndex && index < selectedIndex ? 'scale-90' : '',
-        // index === selectedIndex ? 'scale-110' : ''
+        isPast && 'scale-90 opacity-50',
+        isSelected && 'scale-110'
       )}
       onClick={handleMoveToSegmentTime}
     >
@@ -36,11 +38,17 @@ export function LyricSegment({ segment }: Props) {
         className={cn(
           "font-normal text-xl transition-colors text-muted-foreground",
           // selectedIndex && index < selectedIndex ? 'text-muted-foreground/50' : '',
-          // index === selectedIndex ? 'text-primary' : ''
+          isSelected && 'text-primary'
         )}
       >
         {segment.text}
       </span>
     </button>
   )
-}
+}, (prev, next) => {
+  return (
+    prev.segment === next.segment &&
+    prev.isSelected === next.isSelected &&
+    prev.isPast === next.isPast
+  )
+})

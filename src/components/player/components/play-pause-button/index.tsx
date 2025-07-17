@@ -46,7 +46,7 @@ export function PlayPauseButton() {
 
       const key = e.key.toLowerCase()
 
-      if (key === ' ' || key === 'enter' || key === 'p') {
+      if (key === ' ' || key === 'p') {
         e.preventDefault()
         handleToggle()
 
