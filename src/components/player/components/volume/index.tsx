@@ -11,15 +11,13 @@ export function VolumeControl() {
   const [volume, setVolume] = useAtom(volumeAtom)
 
   const handleVolumeChange = useCallback(
-    ([value]: number[]) => setVolume(value),
-    [setVolume]
+    ([value]: number[]) => {
+      if (audioRef) {
+        audioRef.volume = value
+      }
+    },
+    [audioRef]
   )
-
-  useEffect(() => {
-    if (audioRef) {
-      audioRef.volume = volume
-    }
-  }, [audioRef, volume])
 
   const Icon = useMemo(() => {
     if (volume > 0.75) {
@@ -37,6 +35,24 @@ export function VolumeControl() {
 
     return VolumeX
   }, [volume])
+
+  useEffect(() => {
+    if (!audioRef) {
+      return
+    }
+
+    const handler = () => {
+      setVolume(audioRef.volume)
+    }
+
+    audioRef.addEventListener('volumechange', handler)
+
+    return () => {
+      audioRef.removeEventListener('volumechange', handler)
+    }
+  }, [audioRef, setVolume])
+
+
 
   return (
     <div className="flex items-center gap-2">
