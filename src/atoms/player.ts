@@ -38,3 +38,5 @@ export const currentTimeAtom = atom(0)
 
 // ⏳ Duração total (em segundos)
 export const durationAtom = atom(0)
+
+export const volumeAtom = atom(1)
