@@ -1,7 +1,6 @@
 import { useAtomValue } from 'jotai'
 
 import { currentTrackAtom } from '@/atoms/player'
-import { currentSegmentAtom } from '@/atoms/segment'
 
 import { AudioLoader } from './components/audio-loader'
 import { PlayPauseButton } from './components/play-pause-button'
@@ -20,7 +19,6 @@ export function Player() {
 
   return (
     <div
-      // absolute left-0 right-0 bottom-8
       className="flex flex-col gap-2 p-4 w-full max-w-5xl mx-auto border border-border rounded-2xl backdrop-blur-md shadow-lg"
     >
       <AudioLoader />
@@ -28,9 +26,10 @@ export function Player() {
       <div className="grid grid-cols-3 items-center">
         <CurrentTrack />
 
-        <CurrentSegmentPreview />
-        {/* <div className="font-medium">{track.title}</div> */}
-        <PlayPauseButton />
+        <div className="flex items-center justify-center gap-2">
+          <PlayPauseButton />
+        </div>
+
         <div className="flex items-center justify-end gap-2">
           <VolumeControl />
         </div>
@@ -45,20 +44,5 @@ export function Player() {
         </div>
       </div>
     </div>
-  )
-}
-
-
-function CurrentSegmentPreview() {
-  const currentSegment = useAtomValue(currentSegmentAtom)
-
-  if (!currentSegment) {
-    return null
-  }
-
-  return (
-    <span>
-      {currentSegment.text}
-    </span>
   )
 }

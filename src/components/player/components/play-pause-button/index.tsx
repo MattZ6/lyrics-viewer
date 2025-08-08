@@ -4,6 +4,8 @@ import { Play, Pause } from 'lucide-react'
 
 import { audioRefAtom, isPlayingAtom } from '@/atoms/player'
 
+import { cn } from '@/lib/utils'
+
 export function PlayPauseButton() {
   const audioRef = useAtomValue(audioRefAtom)
   const [isPlaying, setIsPlaying] = useAtom(isPlayingAtom)
@@ -11,7 +13,9 @@ export function PlayPauseButton() {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
-    if (!audioRef) return
+    if (!audioRef) {
+      return
+    }
 
     const handlePlay = () => setIsPlaying(true)
     const handlePause = () => setIsPlaying(false)
@@ -39,20 +43,27 @@ export function PlayPauseButton() {
   }, [audioRef])
 
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      const tag = (e.target as HTMLElement)?.tagName
-      const isTyping = tag === 'INPUT' || tag === 'TEXTAREA' || (e.target as HTMLElement)?.isContentEditable
-      if (isTyping) return
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const tag = (event.target as HTMLElement)?.tagName
 
-      const key = e.key.toLowerCase()
+      const isTyping = tag === 'INPUT' || tag === 'TEXTAREA' || (event.target as HTMLElement)?.isContentEditable
+
+      if (isTyping) {
+        return
+      }
+
+      const key = event.key.toLowerCase()
 
       if (key === ' ' || key === 'p') {
-        e.preventDefault()
+        event.preventDefault()
         handleToggle()
 
-        // Feedback visual suave
         setIsAnimating(true)
-        if (timeoutRef.current) clearTimeout(timeoutRef.current)
+
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current)
+        }
+
         timeoutRef.current = setTimeout(() => setIsAnimating(false), 300)
       }
     }
@@ -64,19 +75,23 @@ export function PlayPauseButton() {
   return (
     <button
       onClick={handleToggle}
-      className={`size-10 rounded-full flex items-center justify-center not-disabled:cursor-pointer bg-primary text-primary-foreground relative overflow-hidden transition-transform ${isAnimating ? 'scale-105 opacity-90' : 'scale-100 opacity-100'
-        }`}
+      className={cn(
+        'size-10 rounded-full flex items-center justify-center not-disabled:cursor-pointer bg-primary text-primary-foreground relative overflow-hidden transition-transform',
+        isAnimating ? 'scale-105 opacity-90' : 'scale-100 opacity-100'
+      )}
     >
-      {/* Ícone Play */}
       <Play
-        className={`absolute size-5 transition-all duration-200 ease-in-out transform ${isPlaying ? 'opacity-0 scale-75 rotate-[-90deg]' : 'opacity-100 scale-100 rotate-0'
-          }`}
+        className={cn(
+          'absolute size-5 transition-all duration-200 ease-in-out transform',
+          isPlaying ? 'opacity-0 scale-75 rotate-[-90deg]' : 'opacity-100 scale-100 rotate-0'
+        )}
       />
 
-      {/* Ícone Pause */}
       <Pause
-        className={`absolute size-5 transition-all duration-200 ease-in-out transform ${isPlaying ? 'opacity-100 scale-100 rotate-0' : 'opacity-0 scale-75 rotate-90'
-          }`}
+        className={cn(
+          'absolute size-5 transition-all duration-200 ease-in-out transform',
+          isPlaying ? 'opacity-100 scale-100 rotate-0' : 'opacity-0 scale-75 rotate-90'
+        )}
       />
     </button>
   )
