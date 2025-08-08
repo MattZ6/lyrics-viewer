@@ -191,6 +191,8 @@ export function SeekBar() {
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [audioRef, duration, setCurrentTime])
 
+  const showHoverBar = previewPercentage !== null && !isDragging;
+
   return (
     <div
       ref={barRef}
@@ -201,7 +203,7 @@ export function SeekBar() {
       <div className="w-full h-1.5 bg-primary/10 rounded overflow-hidden cursor-pointer relative">
 
         {/* Barra de preview (hover) */}
-        {previewPercentage !== null && !isDragging && (
+        {showHoverBar && (
           <div
             className="absolute left-0 top-0 w-full h-full rounded-full bg-primary/15 pointer-events-none transition-opacity"
             style={{
@@ -271,6 +273,7 @@ export const MarkerDivisions = memo(function MarkerDivisions() {
           label={section.label}
           left={(section.startTime / duration) * 100}
           width={((section.endTime - section.startTime) / duration) * 100}
+          isLast={markerSections.length - 1 === index}
         />
       ))}
     </>
@@ -281,16 +284,18 @@ type MarkerDivisionProps = {
   label: string
   left: number
   width: number
+  isLast: boolean
 }
 
-export function MarkerDivision({ label, left, width }: MarkerDivisionProps) {
+export function MarkerDivision({ label, left, width, isLast }: MarkerDivisionProps) {
   const [showLabel, setShowLabel] = useState(false)
 
   return (
     <div
       key={`${label}_${left}`}
       className={cn(
-        "absolute top-0 h-full border-r-2 border-background z-2 flex items-end justify-center",
+        "absolute top-0 h-full  z-2 flex items-end justify-center",
+        !isLast && "border-r-2 border-background"
       )}
       style={{ left: `${left}%`, width: `${width}%` }}
       onMouseEnter={() => setShowLabel(true)}
