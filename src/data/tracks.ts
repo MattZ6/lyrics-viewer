@@ -6,6 +6,7 @@ export const tracks: Track[] = [
     id: 'privilegio',
     title: 'Privilégio',
     band: 'Like a Tear',
+    thumb: '/privilegio-thumb.jpg',
     audio: privilegio,
     segments: [
       { type: 'marker', text: 'Intro' },

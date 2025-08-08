@@ -9,6 +9,7 @@ import { CurrentTime } from './components/current-time'
 import { Duration } from './components/duration'
 import { SeekBar } from './components/seekbar'
 import { VolumeControl } from './components/volume'
+import { CurrentTrack } from './components/current-track'
 
 export function Player() {
   const track = useAtomValue(currentTrackAtom)
@@ -25,16 +26,8 @@ export function Player() {
       <AudioLoader />
 
       <div className="grid grid-cols-3 items-center">
-        <div className="flex items-center gap-2">
-          <div className="size-12 border border-border rounded-md bg-accent">
+        <CurrentTrack />
 
-          </div>
-
-          <div className="flex flex-col">
-            <div className="font-medium">{track.title}</div>
-            <div className="font-normal text-sm text-muted-foreground">{track.band}</div>
-          </div>
-        </div>
         <CurrentSegmentPreview />
         {/* <div className="font-medium">{track.title}</div> */}
         <PlayPauseButton />

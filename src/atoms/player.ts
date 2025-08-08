@@ -20,6 +20,7 @@ export type Track = {
   id: string
   title: string
   band: string
+  thumb: string
   audio: string // path para mp3
   segments: Segment[]
 }
