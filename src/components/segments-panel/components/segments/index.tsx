@@ -1,9 +1,8 @@
-import { createRef, useLayoutEffect, useRef, type RefObject } from "react";
+import { createRef, useLayoutEffect, useRef } from "react";
 import { useAtomValue } from "jotai";
 
 import type { Segment } from "@/atoms/player";
 import { currentSegmentIndexAtom } from "@/atoms/segment";
-import { scrollAnchorAtom } from "@/atoms/segment-view";
 
 import { useScrollToSegment } from "@/hooks/use-scroll-to-segment";
 
@@ -11,7 +10,7 @@ import { cn } from "@/lib/utils";
 
 import { MarkerSegment } from "./components/marker";
 import { LyricSegment } from "./components/lyric";
-// import { useSegmentsScrollPadding } from "@/hooks/use-segments-scroll-padding";
+import { PositionDebugger } from "./components/position-debugger";
 
 type Props = {
   segments: Segment[]
@@ -27,8 +26,6 @@ export function Segments({ segments }: Props) {
   const segmentsRef = useRef(
     segments.map(() => createRef<HTMLLIElement>())
   );
-
-  // const { topPadding, bottomPadding } = useSegmentsScrollPadding(36, 24);
 
   useScrollToSegment(selectedSegmentIndex, scrollableContainerRef, segmentsRef.current);
 
@@ -51,7 +48,6 @@ export function Segments({ segments }: Props) {
       >
         <li
           ref={topSpacerRef}
-          // style={{ height: topPadding }}
           className="w-full shrink-0"
         />
 
@@ -64,7 +60,7 @@ export function Segments({ segments }: Props) {
             {segment.type === 'marker' && (
               <MarkerSegment
                 segment={segment}
-                // TODO: Melhorar esse pedaço
+                withTopSpacing={index > 0 && segments[index - 1].type === 'lyric'}
                 isPast={index + 1 < selectedSegmentIndex}
               />
             )}
@@ -81,7 +77,6 @@ export function Segments({ segments }: Props) {
 
         <li
           ref={bottomSpacerRef}
-          // style={{ height: bottomPadding }}
           className="w-full shrink-0"
         />
       </ul>
@@ -91,32 +86,6 @@ export function Segments({ segments }: Props) {
 
       {/* TODO: remover daqui pra só renderizar quando precisar */}
       <PositionDebugger scrollableContainerRef={scrollableContainerRef} />
-    </div>
-  )
-}
-
-type PositionDebuggerProps = {
-  scrollableContainerRef: RefObject<HTMLUListElement | null>
-}
-
-function PositionDebugger({ scrollableContainerRef }: PositionDebuggerProps) {
-  const debuggerRef = useRef<HTMLDivElement>(null)
-  const scrollAnchor = useAtomValue(scrollAnchorAtom)
-
-  useLayoutEffect(() => {
-    if (debuggerRef.current && scrollableContainerRef.current) {
-      const scrollableContentHeight = scrollableContainerRef.current?.clientHeight ?? 0;
-      debuggerRef.current.style.top = `${scrollableContentHeight * scrollAnchor}px`;
-    }
-  }, [scrollAnchor, scrollableContainerRef])
-
-  return (
-    <div
-      ref={debuggerRef}
-      className="absolute left-0 right-0 w-full h-0 shrink-0 border-t border-cyan-600 text-cyan-600 border-dashed z-10 duration-250 transition-all"
-    // style={{ top: `${topPosition}px` }}
-    >
-      Scroll anchor position ({scrollAnchor * 100}%)
     </div>
   )
 }
