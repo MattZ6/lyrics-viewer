@@ -1,0 +1,29 @@
+import { useLayoutEffect, useRef, type RefObject } from "react"
+import { useAtomValue } from "jotai"
+
+import { scrollAnchorAtom } from "@/atoms/segment-view"
+
+type Props = {
+  scrollableContainerRef: RefObject<HTMLUListElement | null>
+}
+
+export function DebuggerLine({ scrollableContainerRef }: Props) {
+  const debuggerRef = useRef<HTMLDivElement>(null)
+  const scrollAnchor = useAtomValue(scrollAnchorAtom)
+
+  useLayoutEffect(() => {
+    if (debuggerRef.current && scrollableContainerRef.current) {
+      const scrollableContentHeight = scrollableContainerRef.current?.clientHeight ?? 0;
+      debuggerRef.current.style.top = `${scrollableContentHeight * scrollAnchor}px`;
+    }
+  }, [scrollAnchor, scrollableContainerRef])
+
+  return (
+    <div
+      ref={debuggerRef}
+      className="absolute left-0 right-0 w-full h-0 shrink-0 border-t border-cyan-500/50 text-cyan-500 border-dashed z-10 duration-250 transition-[top] px-4 py-1"
+    >
+      Scroll anchor position ({scrollAnchor * 100}%)
+    </div>
+  )
+}
