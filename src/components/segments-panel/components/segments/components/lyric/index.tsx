@@ -9,9 +9,10 @@ type Props = {
   segment: LyricSegmentType
   isPast: boolean
   isSelected: boolean
+  showTranslation: boolean
 }
 
-export const LyricSegment = memo(function LyricSegment({ segment, isPast, isSelected }: Props) {
+export const LyricSegment = memo(function LyricSegment({ segment, isPast, isSelected, showTranslation }: Props) {
   const audioRef = useAtomValue(audioRefAtom)
 
   const handleMoveToSegmentTime = useCallback(() => {
@@ -23,32 +24,40 @@ export const LyricSegment = memo(function LyricSegment({ segment, isPast, isSele
   return (
     <button
       type="button"
+      tabIndex={-1}
+      onClick={handleMoveToSegmentTime}
       className={cn(
-        "text-center min-h-7 py-1 px-4 rounded-md cursor-pointer transition-all hover:bg-accent",
-        // // selectedIndex && index < selectedIndex - 1 ? 'scale-95' : '',
-        // // selectedIndex && index < selectedIndex - 2 ? 'scale-90' : '',
-        // // selectedIndex && index < selectedIndex - 3 ? 'scale-85' : '',
-        isPast && 'scale-90 opacity-50',
+        "flex flex-col text-centerpy-1 py-2 px-3 rounded-lg cursor-pointer transition-all hover:bg-white/10 focus-visible:bg-white/10",
+        isPast && 'scale-90',
         isSelected && 'scale-110'
       )}
-      onClick={handleMoveToSegmentTime}
     >
-
       <span
         className={cn(
-          "font-normal text-xl transition-colors text-muted-foreground",
-          // selectedIndex && index < selectedIndex ? 'text-muted-foreground/50' : '',
-          isSelected && 'text-primary'
+          "font-medium text-xl transition-colors text-white",
+          isPast && "text-white/32",
+          !isPast && !isSelected && "text-white/84"
         )}
       >
         {segment.text}
       </span>
+      {showTranslation && !!segment.translatedText && (
+        <span
+          className={cn(
+            "font-normal text-sm transition-colors text-white/56",
+            isPast && "text-white/32"
+          )}
+        >
+          {segment.translatedText}
+        </span>
+      )}
     </button>
   )
 }, (prev, next) => {
   return (
     prev.segment === next.segment &&
     prev.isSelected === next.isSelected &&
-    prev.isPast === next.isPast
+    prev.isPast === next.isPast &&
+    prev.showTranslation === next.showTranslation
   )
 })

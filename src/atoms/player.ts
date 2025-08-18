@@ -1,5 +1,7 @@
 import { atom } from 'jotai'
 
+import { tracks } from "@/data/tracks";
+
 export type SegmentType = 'lyric' | 'marker'
 
 export type MarkerSegment = {
@@ -11,6 +13,7 @@ export type LyricSegment = {
   type: 'lyric'
   time: number
   text: string
+  translatedText?: string
 }
 
 
@@ -25,8 +28,9 @@ export type Track = {
   segments: Segment[]
 }
 
+
 // 🎵 Faixa atualmente selecionada
-export const currentTrackAtom = atom<Track | null>(null)
+export const currentTrackAtom = atom<Track>(tracks[0])
 
 // 🎧 Referência do <audio>
 export const audioRefAtom = atom<HTMLAudioElement | null>(null)

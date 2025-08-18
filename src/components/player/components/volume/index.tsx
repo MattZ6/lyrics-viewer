@@ -20,7 +20,7 @@ export function VolumeControl() {
   )
 
   const Icon = useMemo(() => {
-    if (volume > 0.75) {
+    if (volume > 0.6) {
       return Volume2
     }
 
@@ -52,11 +52,9 @@ export function VolumeControl() {
     }
   }, [audioRef, setVolume])
 
-
-
   return (
     <div className="flex items-center gap-2">
-      <Icon className="size-4 shrink-0" />
+      <Icon className="size-4 shrink-0 text-white/56" />
       <Slider
         className="w-[100px]"
         value={[volume]}

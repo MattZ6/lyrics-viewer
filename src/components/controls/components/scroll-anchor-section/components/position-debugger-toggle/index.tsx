@@ -9,7 +9,7 @@ export function PositionDebuggerToggle() {
 
   return (
     <label className="flex items-center justify-between">
-      <span className="text-sm">Toggle debugger</span>
+      <span className="text-sm text-white/72">Toggle debugger</span>
       <Switch
         className="cursor-pointer"
         checked={isActive}

@@ -6,19 +6,24 @@ import { cn } from "@/lib/utils"
 
 type Props = {
   segment: MarkerSegmentType
+  withTopSpacing: boolean
   isPast: boolean
 }
 
-export const MarkerSegment = memo(function MarkerSegment({ segment, isPast }: Props) {
+export const MarkerSegment = memo(function MarkerSegment({ segment, withTopSpacing, isPast }: Props) {
   return (
     <div
       className={cn(
-        "transition-all",
-        isPast && "opacity-50 scale-90"
+        "transition-all pb-4",
+        withTopSpacing && "pt-8",
+        isPast && "scale-90",
       )}
     >
       <span
-        className="font-normal text-base text-muted-foreground transition-colors"
+        className={cn(
+          "font-normal text-sm text-white/56 transition-colors",
+          isPast && "text-white/32"
+        )}
       >
         {segment.text}
       </span>
