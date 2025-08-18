@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 import { MarkerSegment } from "./components/marker";
 import { LyricSegment } from "./components/lyric";
 import { PositionDebugger } from "./components/position-debugger";
+import { showTranslatedTextAtom } from "@/atoms/segment-view";
 
 type Props = {
   segments: Segment[]
@@ -20,6 +21,7 @@ export function Segments({ segments }: Props) {
   const topSpacerRef = useRef<HTMLLIElement>(null)
   const bottomSpacerRef = useRef<HTMLLIElement>(null)
 
+  const showTranslatedSegmentText = useAtomValue(showTranslatedTextAtom)
   const selectedSegmentIndex = useAtomValue(currentSegmentIndexAtom)
 
   const scrollableContainerRef = useRef<HTMLUListElement | null>(null);
@@ -43,7 +45,7 @@ export function Segments({ segments }: Props) {
       <ul
         ref={scrollableContainerRef}
         className={cn(
-          "flex-1 flex flex-col items-center relative py-8 overflow-auto h-full",
+          "flex-1 flex flex-col items-center relative py-8 overflow-auto h-full pl-2",
         )}
       >
         <li
@@ -70,6 +72,7 @@ export function Segments({ segments }: Props) {
                 segment={segment}
                 isPast={index < selectedSegmentIndex}
                 isSelected={index === selectedSegmentIndex}
+                showTranslation={showTranslatedSegmentText}
               />
             )}
           </li>
@@ -81,10 +84,9 @@ export function Segments({ segments }: Props) {
         />
       </ul>
 
-      <div className="absolute top-0 left-0 right-0 w-full h-10 shrink-0 bg-gradient-to-t from-background/25 to-background z-10" />
-      <div className="absolute bottom-0 left-0 right-0 w-full h-10 shrink-0 bg-gradient-to-b from-background/25 to-background z-10" />
+      {/* <div className="absolute top-0 left-0 right-0 w-full h-10 shrink-0 bg-gradient-to-t from-background/25 to-background z-10" /> */}
+      {/* <div className="absolute bottom-0 left-0 right-0 w-full h-10 shrink-0 bg-gradient-to-b from-background/25 to-background z-10" /> */}
 
-      {/* TODO: remover daqui pra só renderizar quando precisar */}
       <PositionDebugger scrollableContainerRef={scrollableContainerRef} />
     </div>
   )

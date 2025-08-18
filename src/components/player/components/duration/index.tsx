@@ -8,7 +8,7 @@ export function Duration() {
   const time = useAtomValue(durationAtom)
 
   return (
-    <span className="text-xs text-muted-foreground text-right">
+    <span className="text-xs text-white/56 text-right">
       {formatTime(time)}
     </span>
   )

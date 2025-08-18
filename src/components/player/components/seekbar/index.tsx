@@ -200,12 +200,12 @@ export function SeekBar() {
       onPointerDown={handleBarPointerDown}
     >
       {/* Barra de fundo */}
-      <div className="w-full h-1.5 bg-primary/10 rounded overflow-hidden cursor-pointer relative">
+      <div className="w-full h-1.5 bg-white/20 rounded overflow-hidden cursor-pointer relative">
 
         {/* Barra de preview (hover) */}
         {showHoverBar && (
           <div
-            className="absolute left-0 top-0 w-full h-full rounded-full bg-primary/15 pointer-events-none transition-opacity"
+            className="absolute left-0 top-0 w-full h-full rounded-full bg-white/20 pointer-events-none transition-opacity"
             style={{
               transform: `translateX(-${100 - previewPercentage}%)`,
               // zIndex: 1,
@@ -217,7 +217,7 @@ export function SeekBar() {
         <div
           className={cn(
             "relative h-full rounded-full transition-colors z-1",
-            isDragging ? 'bg-orange-700' : 'bg-orange-600',
+            isDragging ? 'bg-gradient-to-r from-orange-200 to-orange-300' : 'bg-gradient-to-r from-orange-200 to-orange-500',
           )}
           style={{
             transform: `translateX(-${seekTranslateXValue}%)`,
@@ -242,7 +242,7 @@ export function SeekBar() {
         ref={thumbRef}
         type="button"
         className={cn(
-          "absolute top-1/2 size-4 bg-orange-600 border rounded-full opacity-50 z-20",
+          "absolute top-1/2 size-4 bg-orange-600 rounded-full z-20 shadow-md",
           showThumb && !isDragging && !isSeekingTransiently && 'transition-transform',
           isDragging ? 'cursor-grabbing' : 'cursor-pointer'
         )}
@@ -287,7 +287,7 @@ type MarkerDivisionProps = {
   isLast: boolean
 }
 
-export function MarkerDivision({ label, left, width, isLast }: MarkerDivisionProps) {
+export function MarkerDivision({ label, left, width }: MarkerDivisionProps) {
   const [showLabel, setShowLabel] = useState(false)
 
   return (
@@ -295,7 +295,7 @@ export function MarkerDivision({ label, left, width, isLast }: MarkerDivisionPro
       key={`${label}_${left}`}
       className={cn(
         "absolute top-0 h-full  z-2 flex items-end justify-center",
-        !isLast && "border-r-2 border-background"
+        // !isLast && "border-r-2 border-background"
       )}
       style={{ left: `${left}%`, width: `${width}%` }}
       onMouseEnter={() => setShowLabel(true)}
@@ -303,7 +303,7 @@ export function MarkerDivision({ label, left, width, isLast }: MarkerDivisionPro
     >
       <span
         className={cn(
-          "absolute -top-0.5 left-0 text-xs text-muted-foreground pointer-events-none opacity-0 translate-y-1 transition-all",
+          "absolute -top-0.5 left-0 text-xs text-white/36 pointer-events-none opacity-0 translate-y-1 transition-all",
           showLabel ? "opacity-100 translate-y-0" : "",
         )}
       >

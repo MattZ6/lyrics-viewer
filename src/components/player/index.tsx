@@ -19,7 +19,7 @@ export function Player() {
 
   return (
     <div
-      className="flex flex-col gap-2 p-4 w-full max-w-5xl mx-auto border border-border rounded-2xl backdrop-blur-md shadow-lg"
+      className="flex flex-col gap-2 p-4 w-full max-w-5xl mx-auto border rounded-xl bg-white/10 border-white/10"
     >
       <AudioLoader />
 
