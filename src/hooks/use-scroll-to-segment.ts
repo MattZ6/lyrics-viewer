@@ -1,18 +1,18 @@
 import { type RefObject, useEffect, useRef } from "react";
 import { useAtomValue } from "jotai";
 
-import { scrollAnchorAtom } from "@/atoms/segment-view";
+import { scrollAnchorAtom, showTranslatedTextAtom } from "@/atoms/segment-view";
 
 export function useScrollToSegment(
   selectedSegmentIndex: number,
   scrollableContainerRef: RefObject<HTMLElement | null>,
   segmentsRef: RefObject<HTMLElement | null>[]
 ) {
+  const showTranslatedText = useAtomValue(showTranslatedTextAtom)
   const scrollAnchor = useAtomValue(scrollAnchorAtom);
 
   const prevSelectedIndexRef = useRef(selectedSegmentIndex)
   const prevScrollAnchorRef = useRef(scrollAnchor)
-
 
   useEffect(() => {
     const scrollContainerElement = scrollableContainerRef.current;
@@ -49,5 +49,5 @@ export function useScrollToSegment(
     });
 
     return () => cancelAnimationFrame(frame);
-  }, [selectedSegmentIndex, scrollAnchor, scrollableContainerRef, segmentsRef]);
+  }, [selectedSegmentIndex, scrollAnchor, scrollableContainerRef, segmentsRef, showTranslatedText]);
 }
