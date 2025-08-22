@@ -25,7 +25,7 @@ export const tracks: Track[] = [
       { type: 'lyric', time: 56.84, text: 'Renascer', translatedText: "Be reborn" },
       { type: 'lyric', time: 59.19, text: 'Não voltar', translatedText: "Don't go back" },
       { type: 'lyric', time: 61.75, text: 'E entender que tudo tem final', translatedText: "And understanding that everything has an end" },
-      { type: 'lyric', time: 66.77, text: 'Renascer', translatedText: "Be reborn" },
+      { type: 'lyric', time: 66.70, text: 'Renascer', translatedText: "Be reborn" },
       { type: 'lyric', time: 69.24, text: 'Não voltar', translatedText: "Don't go back" },
       { type: 'lyric', time: 71.75, text: 'E entender que perder tempo é um privilégio', translatedText: "And understand that wasting time is a privilege" },
       { type: 'marker', text: 'Re-intro' },
