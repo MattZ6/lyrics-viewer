@@ -2,6 +2,8 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { useAtom, useAtomValue } from 'jotai'
 import { Play, Pause } from 'lucide-react'
 
+import { useKeyboardShortcut } from '@/hooks/use-keyboard-shortcut'
+
 import { audioRefAtom, isPlayingAtom } from '@/atoms/player'
 
 import { cn } from '@/lib/utils'
@@ -11,6 +13,31 @@ export function PlayPauseButton() {
   const [isPlaying, setIsPlaying] = useAtom(isPlayingAtom)
   const [isAnimating, setIsAnimating] = useState(false)
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+
+  useKeyboardShortcut([" ", "P"], (event) => {
+    event.preventDefault();
+    handleToggle()
+
+    setIsAnimating(true)
+
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current)
+    }
+
+    timeoutRef.current = setTimeout(() => setIsAnimating(false), 300)
+  });
+
+  const handleToggle = useCallback(() => {
+    if (!audioRef) {
+      return
+    }
+
+    if (audioRef.paused) {
+      audioRef.play()
+    } else {
+      audioRef.pause()
+    }
+  }, [audioRef])
 
   useEffect(() => {
     if (!audioRef) {
@@ -32,52 +59,12 @@ export function PlayPauseButton() {
     }
   }, [audioRef, setIsPlaying])
 
-  const handleToggle = useCallback(() => {
-    if (!audioRef) return
-
-    if (audioRef.paused) {
-      audioRef.play()
-    } else {
-      audioRef.pause()
-    }
-  }, [audioRef])
-
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      const tag = (event.target as HTMLElement)?.tagName
-
-      const isTyping = tag === 'INPUT' || tag === 'TEXTAREA' || (event.target as HTMLElement)?.isContentEditable
-
-      if (isTyping) {
-        return
-      }
-
-      const key = event.key.toLowerCase()
-
-      if (key === ' ' || key === 'p') {
-        event.preventDefault()
-        handleToggle()
-
-        setIsAnimating(true)
-
-        if (timeoutRef.current) {
-          clearTimeout(timeoutRef.current)
-        }
-
-        timeoutRef.current = setTimeout(() => setIsAnimating(false), 300)
-      }
-    }
-
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [handleToggle])
-
   return (
     <button
       onClick={handleToggle}
       className={cn(
         'size-10 rounded-full flex items-center justify-center not-disabled:cursor-pointer bg-primary text-primary-foreground relative overflow-hidden transition-transform',
-        isAnimating ? 'scale-105 opacity-90' : 'scale-100 opacity-100'
+        isAnimating ? 'scale-115' : 'scale-100'
       )}
     >
       <Play
