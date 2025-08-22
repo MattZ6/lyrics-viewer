@@ -103,7 +103,7 @@ export function Segments({ segments }: Props) {
       <ul
         ref={scrollableContainerRef}
         className={cn(
-          "flex-1 flex flex-col items-center relative py-8 overflow-auto h-full pl-2",
+          "flex-1 flex flex-col items-center relative py-8 overflow-y-auto overflow-x-hidden h-full pl-2",
         )}
         style={{
           WebkitMaskImage: "linear-gradient(to bottom, transparent, black 20%, black 90%, transparent)",

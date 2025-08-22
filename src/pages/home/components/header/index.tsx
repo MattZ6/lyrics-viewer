@@ -6,8 +6,8 @@ export function Header() {
   return (
     <header
       className={cn(
-        "grid grid-cols-2 p-6",
-        "md:grid-cols-3"
+        "grid grid-cols-2 p-4",
+        "md:grid-cols-3 md:p-6"
       )}
     >
       <SongSwitcher />
