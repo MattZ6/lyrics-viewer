@@ -1,7 +1,6 @@
 import {
   memo,
   useCallback,
-  useEffect,
   useLayoutEffect,
   useRef,
   useState,
@@ -9,6 +8,7 @@ import {
 } from 'react'
 import { useAtom, useAtomValue } from 'jotai'
 
+import { useKeyboardShortcut } from '@/hooks/use-keyboard-shortcut'
 import { useTrackMarkerSections } from '@/hooks/use-track-marker-sections'
 
 import {
@@ -160,36 +160,58 @@ export function SeekBar() {
     setTimeout(() => {
       setSeekFeedback(null)
       setIsSeekingTransiently(false)
-    }, 600) // ou menos, tipo 300ms se preferir
+    }, 600)
   }
 
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (!audioRef || duration === 0) return
-
-      const step = event.shiftKey ? SEEK_STEP_SHIFT : SEEK_STEP
-      let newTime = audioRef.currentTime
-
-      if (event.key === 'ArrowRight') {
-        newTime = Math.min(newTime + step, duration)
-        showSeekFeedback(`+${step}s`)
-      } else if (event.key === 'ArrowLeft') {
-        newTime = Math.max(newTime - step, 0)
-        showSeekFeedback(`-${step}s`)
-      } else {
-        return
-      }
-
-      event.preventDefault()
-      audioRef.currentTime = newTime
-      setCurrentTime(newTime)
-      setDragTime(null)
-      setHoverTime(null)
+  const handleRewind = useCallback((stepInSeconds: number) => {
+    if (!audioRef) {
+      return
     }
 
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
+    const newTime = Math.max(audioRef.currentTime - stepInSeconds, 0)
+    audioRef.currentTime = newTime
+    setCurrentTime(newTime)
+
+    showSeekFeedback(`-${stepInSeconds}s`);
+
+    setDragTime(null)
+    setHoverTime(null)
+  }, [audioRef, setCurrentTime])
+
+  const handleFastForward = useCallback((stepInSeconds: number) => {
+    if (!audioRef) {
+      return
+    }
+
+    const newTime = Math.min(audioRef.currentTime + stepInSeconds, duration)
+    audioRef.currentTime = newTime
+    setCurrentTime(newTime)
+
+    showSeekFeedback(`+${stepInSeconds}s`);
+
+    setDragTime(null)
+    setHoverTime(null)
   }, [audioRef, duration, setCurrentTime])
+
+  useKeyboardShortcut(["ArrowLeft"], (event) => {
+    event.preventDefault()
+    handleRewind(SEEK_STEP)
+  });
+
+  useKeyboardShortcut(["ArrowRight"], (event) => {
+    event.preventDefault()
+    handleFastForward(SEEK_STEP)
+  });
+
+  useKeyboardShortcut(["Shift+ArrowLeft"], (event) => {
+    event.preventDefault()
+    handleRewind(SEEK_STEP_SHIFT)
+  });
+
+  useKeyboardShortcut(["Shift+ArrowRight"], (event) => {
+    event.preventDefault()
+    handleFastForward(SEEK_STEP_SHIFT)
+  });
 
   const showHoverBar = previewPercentage !== null && !isDragging;
 
@@ -227,7 +249,7 @@ export function SeekBar() {
 
       {seekFeedback && (
         <div
-          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-full text-sm font-medium px-2 py-1 rounded shadow-md bg-accent/10 animate-fade-out pointer-events-none"
+          className="absolute left-1/2 -translate-x-1/2 translate-y-2 text-sm px-2 py-1 rounded shadow-md bg-white/10 text-white/56 animate-in transition-all animate-fade-out pointer-events-none"
         >
           {seekFeedback}
         </div>
