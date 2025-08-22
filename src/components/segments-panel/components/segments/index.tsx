@@ -123,7 +123,7 @@ export function Segments({ segments }: Props) {
           <li
             key={index}
             ref={segmentsRef.current[index]}
-            className="flex items-center"
+            className="flex items-center justify-center w-full"
           >
             {segment.type === 'marker' && (
               <MarkerSegment
