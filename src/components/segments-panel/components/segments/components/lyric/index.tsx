@@ -28,13 +28,14 @@ export const LyricSegment = memo(function LyricSegment({ segment, isPast, isSele
       onClick={handleMoveToSegmentTime}
       className={cn(
         "flex flex-col text-centerpy-1 py-2 px-3 rounded-lg cursor-pointer transition-all hover:bg-white/10 focus-visible:bg-white/10",
-        isPast && 'scale-90',
+        isPast && 'scale-95 md:scale-90',
         isSelected && 'scale-110'
       )}
     >
       <span
         className={cn(
-          "font-medium text-xl transition-colors text-white",
+          "font-medium text-lg transition-colors text-white",
+          "md:text-xl",
           isPast && "text-white/32",
           !isPast && !isSelected && "text-white/84"
         )}
@@ -44,7 +45,8 @@ export const LyricSegment = memo(function LyricSegment({ segment, isPast, isSele
       {showTranslation && !!segment.translatedText && (
         <span
           className={cn(
-            "font-normal text-sm transition-colors text-white/56",
+            "font-normal text-xs transition-colors text-white/56",
+            "md:text-sm",
             isPast && "text-white/32"
           )}
         >
