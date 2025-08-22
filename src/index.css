@@ -130,7 +130,8 @@ html {
 
 body,
 html {
-  overscroll-behavior: none
+  overscroll-behavior: none;
+  background-color: #000000;
 }
 
 body {
@@ -138,6 +139,7 @@ body {
 }
 
 @media screen and (min-width: 768px) {
+
   /* width */
   ::-webkit-scrollbar {
     width: 8px;

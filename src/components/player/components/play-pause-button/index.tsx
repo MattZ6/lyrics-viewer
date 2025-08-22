@@ -63,7 +63,7 @@ export function PlayPauseButton() {
     <button
       onClick={handleToggle}
       className={cn(
-        'size-10 rounded-full flex items-center justify-center not-disabled:cursor-pointer bg-primary text-primary-foreground relative overflow-hidden transition-transform',
+        'size-12 md:size-10 rounded-full flex items-center justify-center not-disabled:cursor-pointer bg-primary text-primary-foreground relative overflow-hidden transition-transform',
         isAnimating ? 'scale-115' : 'scale-100'
       )}
     >

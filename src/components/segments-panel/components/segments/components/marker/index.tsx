@@ -22,7 +22,7 @@ export const MarkerSegment = memo(function MarkerSegment({ segment, withTopSpaci
       <span
         className={cn(
           "font-normal text-sm text-white/56 transition-colors",
-          isPast && "text-white/32"
+          isPast && "text-white/16"
         )}
       >
         {segment.text}
