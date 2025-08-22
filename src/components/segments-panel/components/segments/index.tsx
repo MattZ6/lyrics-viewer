@@ -99,7 +99,7 @@ export function Segments({ segments }: Props) {
   });
 
   return (
-    <div className="relative flex flex-col h-full overflow-hidden">
+    <div className="relative flex flex-col h-full overflow-hidden mb-[192px] md:mb-0">
       <ul
         ref={scrollableContainerRef}
         className={cn(
