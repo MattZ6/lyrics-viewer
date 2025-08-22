@@ -1,26 +1,52 @@
 import { createRef, useLayoutEffect, useRef } from "react";
 import { useAtomValue } from "jotai";
 
-import type { Segment } from "@/atoms/player";
+import { audioRefAtom, type Segment } from "@/atoms/player";
+import { showTranslatedTextAtom } from "@/atoms/segment-view";
 import { currentSegmentIndexAtom } from "@/atoms/segment";
 
 import { useScrollToSegment } from "@/hooks/use-scroll-to-segment";
+import { useKeyboardShortcut } from "@/hooks/use-keyboard-shortcut";
 
 import { cn } from "@/lib/utils";
 
 import { MarkerSegment } from "./components/marker";
 import { LyricSegment } from "./components/lyric";
 import { PositionDebugger } from "./components/position-debugger";
-import { showTranslatedTextAtom } from "@/atoms/segment-view";
 
 type Props = {
   segments: Segment[]
+}
+
+function findPreviousLyric(segments: Segment[], currentIndex: number) {
+  for (let i = currentIndex - 1; i >= 0; i--) {
+    const segment = segments[i]
+
+    if (segment.type === "lyric") {
+      return segment
+    }
+  }
+
+  return null
+}
+
+function findNextLyric(segments: Segment[], currentIndex: number) {
+  for (let i = currentIndex + 1; i < segments.length; i++) {
+    const segment = segments[i]
+
+    if (segment.type === "lyric") {
+      return segment
+    }
+  }
+
+  return null
 }
 
 export function Segments({ segments }: Props) {
   const topSpacerRef = useRef<HTMLLIElement>(null)
   const bottomSpacerRef = useRef<HTMLLIElement>(null)
 
+  const audioRef = useAtomValue(audioRefAtom)
   const showTranslatedSegmentText = useAtomValue(showTranslatedTextAtom)
   const selectedSegmentIndex = useAtomValue(currentSegmentIndexAtom)
 
@@ -40,6 +66,38 @@ export function Segments({ segments }: Props) {
     }
   }, [])
 
+  useKeyboardShortcut(["ArrowUp"], (event) => {
+    event.preventDefault()
+
+    const segment = findPreviousLyric(segments, selectedSegmentIndex)
+
+    if (!segment) {
+      return
+    }
+
+    if (!audioRef) {
+      return
+    }
+
+    audioRef.currentTime = segment.time
+  });
+
+  useKeyboardShortcut(["ArrowDown"], (event) => {
+    event.preventDefault()
+
+    const segment = findNextLyric(segments, selectedSegmentIndex)
+
+    if (!segment) {
+      return
+    }
+
+    if (!audioRef) {
+      return
+    }
+
+    audioRef.currentTime = segment.time
+  });
+
   return (
     <div className="relative flex flex-col h-full overflow-hidden">
       <ul
@@ -47,6 +105,14 @@ export function Segments({ segments }: Props) {
         className={cn(
           "flex-1 flex flex-col items-center relative py-8 overflow-auto h-full pl-2",
         )}
+        style={{
+          WebkitMaskImage: "linear-gradient(to bottom, transparent, black 20%, black 90%, transparent)",
+          WebkitMaskRepeat: "no-repeat",
+          WebkitMaskSize: "100% 100%",
+          maskImage: "linear-gradient(to bottom, transparent, black 20%, black 90%, transparent)",
+          maskRepeat: "no-repeat",
+          maskSize: "100% 100%",
+        }}
       >
         <li
           ref={topSpacerRef}
