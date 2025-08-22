@@ -9,7 +9,7 @@ export function HomePage() {
   return (
     <BackgroundImage>
       <main
-        className="flex flex-col h-[100vh] bg-black/50 backdrop-blur-[48px]"
+        className="flex flex-col h-[100dvh] bg-black/50 backdrop-blur-[48px]"
       >
         <Header />
 
