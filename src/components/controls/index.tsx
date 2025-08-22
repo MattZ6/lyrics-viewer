@@ -1,4 +1,5 @@
 import { ScrollAnchorSection } from "./components/scroll-anchor-section";
+import { TranslationSection } from "./components/translation-section";
 
 export function Controls() {
   return (
@@ -10,6 +11,8 @@ export function Controls() {
       </small>
 
       <ScrollAnchorSection />
+
+      <TranslationSection />
     </div>
   )
 }
