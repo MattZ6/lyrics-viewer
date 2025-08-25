@@ -101,6 +101,7 @@ export function Segments({ segments }: Props) {
   return (
     <div className="relative flex flex-col h-full overflow-hidden">
       <ul
+        tabIndex={-1}
         ref={scrollableContainerRef}
         className={cn(
           "flex-1 flex flex-col items-center relative py-8 overflow-y-auto overflow-x-hidden h-full pl-2",
