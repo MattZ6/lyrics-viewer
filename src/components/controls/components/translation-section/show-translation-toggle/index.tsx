@@ -9,7 +9,7 @@ export function ShowTranslationToggle() {
 
   return (
     <label className="flex items-center justify-between">
-      <span className="text-sm text-white/72">Show translation</span>
+      <span className="text-sm text-zinc-400">Show translation</span>
       <Switch
         className="cursor-pointer"
         checked={showTranslation}

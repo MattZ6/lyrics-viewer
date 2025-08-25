@@ -10,16 +10,16 @@ export function PositionSelector() {
 
   return (
     <div className="flex flex-col gap-2">
-      <span className="text-sm text-white/72">Position</span>
-      <div className="flex items-center self-start p-1 rounded-full bg-white/10">
+      <span className="text-sm text-zinc-400">Position</span>
+      <div className="flex items-center self-start p-1 rounded-full bg-zinc-700/50">
         {
           OPTIONS.map((value) => (
             <button
               key={value}
               type="button"
               className={cn(
-                "flex items-center justify-center rounded-full text-sm px-2 py-1 not-disabled:cursor-pointer text-white/84",
-                value === anchor && "bg-black text-white"
+                "flex items-center justify-center rounded-full text-sm px-2 py-1 not-disabled:cursor-pointer text-zinc-100",
+                value === anchor && "bg-zinc-900 text-zinc-100"
               )}
               onClick={() => setAnchor(value)}
             >
@@ -28,23 +28,6 @@ export function PositionSelector() {
           ))
         }
       </div>
-      {/* <div className="flex items-center gap-2">
-        {
-          OPTIONS.map((value) => (
-            <button
-              key={value}
-              type="button"
-              className={cn(
-                "flex items-center justify-center size-8 rounded-md border border-border text-xs text-muted-foreground not-disabled:cursor-pointer",
-                value === anchor ? 'bg-primary text-primary-foreground border-primary' : ''
-              )}
-              onClick={() => setAnchor(value)}
-            >
-              {value * 100}%
-            </button>
-          ))
-        }
-      </div> */}
     </div>
   );
 }
