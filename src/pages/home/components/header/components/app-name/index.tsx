@@ -5,7 +5,7 @@ export function AppName() {
   return (
     <div
       className={cn(
-        "flex items-center gap-2 w-fit py-2 px-3 rounded-full bg-white/10 border border-white/10 text-white",
+        "flex items-center gap-2 w-fit py-2 px-3 rounded-full bg-gradient-to-tr from-zinc-900 to-zinc-800 border border-zinc-800 text-white",
         "md:self-center md:justify-self-center"
       )}
     >
