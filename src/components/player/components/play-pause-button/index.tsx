@@ -61,22 +61,24 @@ export function PlayPauseButton() {
 
   return (
     <button
-      onClick={handleToggle}
+      type="button"
+      aria-label={isPlaying ? "Pause" : "Play"}
       className={cn(
-        'size-12 md:size-10 rounded-full flex items-center justify-center not-disabled:cursor-pointer bg-primary text-primary-foreground relative overflow-hidden transition-transform',
+        'flex items-center justify-center size-12 rounded-full not-disabled:cursor-pointer bg-zinc-950 text-zinc-50 ring-zinc-700 focus-visible:ring-4 focus-visible:outline-hidden disabled:pointer-events-none relative overflow-hidden transition-[color,box-shadow,transform,translate,scale,rotate]',
         isAnimating ? 'scale-115' : 'scale-100'
       )}
+      onClick={handleToggle}
     >
       <Play
         className={cn(
-          'absolute size-5 transition-all duration-200 ease-in-out transform',
+          'absolute size-6 transition-all duration-200 ease-in-out transform',
           isPlaying ? 'opacity-0 scale-75 rotate-[-90deg]' : 'opacity-100 scale-100 rotate-0'
         )}
       />
 
       <Pause
         className={cn(
-          'absolute size-5 transition-all duration-200 ease-in-out transform',
+          'absolute size-6 transition-all duration-200 ease-in-out transform',
           isPlaying ? 'opacity-100 scale-100 rotate-0' : 'opacity-0 scale-75 rotate-90'
         )}
       />

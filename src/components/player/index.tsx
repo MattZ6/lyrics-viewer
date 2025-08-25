@@ -18,29 +18,31 @@ export function Player() {
   }
 
   return (
-    <div
-      className="flex flex-col gap-2 p-4 w-full max-w-5xl mx-auto border rounded-xl bg-gradient-to-tr from-zinc-950 to-zinc-800 border-zinc-800"
-    >
-      <AudioLoader />
+    <div className="w-full max-w-5xl mx-auto px-4 pb-4">
+      <div
+        className="flex flex-col gap-2 p-4 border rounded-xl bg-gradient-to-tr from-zinc-950 to-zinc-800 border-zinc-800"
+      >
+        <AudioLoader />
 
-      <div className="grid grid-cols-3 items-center">
-        <CurrentTrack />
+        <div className="grid grid-cols-3 items-center">
+          <CurrentTrack />
 
-        <div className="flex items-center justify-center gap-2">
-          <PlayPauseButton />
+          <div className="flex items-center justify-center gap-2">
+            <PlayPauseButton />
+          </div>
+
+          <div className="flex items-center justify-end gap-2">
+            <VolumeControl />
+          </div>
         </div>
 
-        <div className="flex items-center justify-end gap-2">
-          <VolumeControl />
-        </div>
-      </div>
+        <div className="flex flex-col">
+          <SeekBar />
 
-      <div className="flex flex-col">
-        <SeekBar />
-
-        <div className="flex items-center justify-between">
-          <CurrentTime />
-          <Duration />
+          <div className="flex items-center justify-between">
+            <CurrentTime />
+            <Duration />
+          </div>
         </div>
       </div>
     </div>
