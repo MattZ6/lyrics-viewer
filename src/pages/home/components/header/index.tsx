@@ -1,18 +1,11 @@
-import { cn } from "@/lib/utils";
-import { AppName } from "./components/app-name";
-import { SongSwitcher } from "./components/song-switcher";
+import { Brand } from "./components/brand";
 
-export function   Header() {
+export function Header() {
   return (
-    <header
-      className={cn(
-        "grid grid-cols-2 p-4",
-        "md:grid-cols-3 md:p-6"
-      )}
-    >
-      <SongSwitcher />
-
-      <AppName />
+    <header className="fixed top-0 left-0 right-0">
+      <div className="flex items-center gap-4 max-w-5xl p-4 w-full mx-auto">
+        <Brand />
+      </div>
     </header>
   )
 }
