@@ -13,7 +13,7 @@ export function SongSwitcher() {
       <CurrentSong />
 
       <DropdownMenuContent
-        className="rounded-lg bg-white/10 border border-white/10"
+        className="rounded-lg bg-zinc-950 border-zinc-800"
         side="bottom"
         align="start"
         sideOffset={8}

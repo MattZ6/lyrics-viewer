@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import { AppName } from "./components/app-name";
 import { SongSwitcher } from "./components/song-switcher";
 
-export function Header() {
+export function   Header() {
   return (
     <header
       className={cn(

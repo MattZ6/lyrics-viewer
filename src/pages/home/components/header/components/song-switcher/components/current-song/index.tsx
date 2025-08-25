@@ -13,7 +13,7 @@ export function CurrentSong() {
   return (
     <DropdownMenuTrigger
       className={cn(
-        "items-center gap-2 w-fit p-2 rounded-lg bg-white/10 border border-white/10 cursor-pointer hover:bg-white/15 focus-visible:bg-white/15",
+        "items-center gap-2 w-fit p-2 rounded-lg bg-gradient-to-tr from-zinc-950 to-zinc-800 border border-zinc-800 cursor-pointer hover:bg-zinc-800 focus-visible:bg-zinc-800",
         "hidden md:flex"
       )}
     >
