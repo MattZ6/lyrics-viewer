@@ -8,7 +8,7 @@ export function CurrentTime() {
   const time = useAtomValue(currentTimeAtom)
 
   return (
-    <span className="text-xs text-white/56 text-left">
+    <span className="text-xs text-zinc-500 text-left selection:bg-zinc-50 selection:text-zinc-950">
       {formatTime(time)}
     </span>
   )

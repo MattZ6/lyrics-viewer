@@ -54,7 +54,7 @@ export function VolumeControl() {
 
   return (
     <div className="flex items-center gap-2">
-      <Icon className="size-4 shrink-0 text-white/56" />
+      <Icon className="size-4 shrink-0 text-zinc-400" />
       <Slider
         className="w-[100px]"
         value={[volume]}
