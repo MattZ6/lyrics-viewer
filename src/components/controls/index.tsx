@@ -6,11 +6,11 @@ export function Controls() {
   return (
     <div
       className={cn(
-        "absolute top-40 right-8 hidden flex-col gap-4 min-w-3xs py-2 px-3 rounded-xl border shadow-sm z-10 bg-gradient-to-tr from-zinc-800 to-zinc-800 border-zinc-700",
+        "absolute top-40 right-8 hidden flex-col gap-4 min-w-3xs py-2 px-3 rounded-xl border shadow-sm z-10 bg-zinc-800 border-zinc-700",
         "md:flex"
       )}
     >
-      <small className="text-xs text-white/56">
+      <small className="text-xs text-zinc-400">
         Configurations
       </small>
 
