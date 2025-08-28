@@ -131,12 +131,13 @@ html {
 body,
 html {
   overscroll-behavior: none;
-  background-color: #000000;
 }
 
 body {
   height: 100vh;
   height: 100dvh;
+
+  background: linear-gradient(25deg, var(--color-black), var(--color-zinc-800) )
 }
 
 /* width */
