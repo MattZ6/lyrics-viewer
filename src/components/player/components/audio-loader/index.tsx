@@ -1,49 +1,60 @@
-"use client"
+"use client";
 
-import { useCallback, type SyntheticEvent } from 'react'
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from "jotai";
+import { type SyntheticEvent, useCallback } from "react";
 
 import {
   audioRefAtom,
   currentTimeAtom,
+  currentTrackAtom,
   durationAtom,
-  currentTrackAtom
-} from '@/atoms/player'
+} from "@/atoms/player";
 
-type TimeUpdatedEvent = SyntheticEvent<HTMLAudioElement, Event>
-type MetadataLoadedEvent = SyntheticEvent<HTMLAudioElement, Event>
+type TimeUpdatedEvent = SyntheticEvent<HTMLAudioElement, Event>;
+type MetadataLoadedEvent = SyntheticEvent<HTMLAudioElement, Event>;
 
 export function AudioLoader() {
-  const track = useAtomValue(currentTrackAtom)
-  const setAudioRef = useSetAtom(audioRefAtom)
-  const setCurrentTime = useSetAtom(currentTimeAtom)
-  const setDuration = useSetAtom(durationAtom)
+  const track = useAtomValue(currentTrackAtom);
+  const setAudioRef = useSetAtom(audioRefAtom);
+  const setCurrentTime = useSetAtom(currentTimeAtom);
+  const setDuration = useSetAtom(durationAtom);
 
-  const handleSetAudioRef = useCallback((element: HTMLAudioElement | null) => {
-    setAudioRef(element)
-  }, [setAudioRef])
+  const handleSetAudioRef = useCallback(
+    (element: HTMLAudioElement | null) => {
+      setAudioRef(element);
+    },
+    [setAudioRef],
+  );
 
-  const handleTimeUpdate = useCallback((event: TimeUpdatedEvent) => {
-    const { currentTime } = event.currentTarget
-    setCurrentTime(currentTime)
-  }, [setCurrentTime])
+  const handleTimeUpdate = useCallback(
+    (event: TimeUpdatedEvent) => {
+      const { currentTime } = event.currentTarget;
+      setCurrentTime(currentTime);
+    },
+    [setCurrentTime],
+  );
 
-  const handleMetadataLoaded = useCallback((event: MetadataLoadedEvent) => {
-    const { duration } = event.currentTarget
-    setDuration(duration)
-  }, [setDuration])
+  const handleMetadataLoaded = useCallback(
+    (event: MetadataLoadedEvent) => {
+      const { duration } = event.currentTarget;
+      setDuration(duration);
+    },
+    [setDuration],
+  );
 
   if (!track) {
-    return null
+    return null;
   }
 
   return (
+    // biome-ignore lint/a11y/useMediaCaption: It doesn't have captions
     <audio
       ref={handleSetAudioRef}
       src={track.audio}
+      translate="no"
       onTimeUpdate={handleTimeUpdate}
       onLoadedMetadata={handleMetadataLoaded}
       preload="metadata"
     />
-  )
+  );
 }

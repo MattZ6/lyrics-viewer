@@ -1,9 +1,15 @@
-"use client"
+"use client";
 
-import { forwardRef, useImperativeHandle, useLayoutEffect, useRef, type HTMLAttributes } from 'react';
-import { motion, useAnimation } from 'motion/react';
+import { motion, useAnimation } from "motion/react";
+import {
+  forwardRef,
+  type HTMLAttributes,
+  useImperativeHandle,
+  useLayoutEffect,
+  useRef,
+} from "react";
 
-import { cn } from '@/lib/utils';
+import { cn } from "@/lib/utils";
 
 export interface AnimatedLogoHandle {
   startAnimation: () => void;
@@ -20,41 +26,39 @@ const AnimatedLogo = forwardRef<AnimatedLogoHandle, Props>(
     const isControlledRef = useRef(false);
 
     useLayoutEffect(() => {
-      let stopAnimationTimeout: NodeJS.Timeout
+      let stopAnimationTimeout: NodeJS.Timeout;
 
       const mountTimeout = setTimeout(() => {
-        controls.start('animate')
+        controls.start("animate");
 
         stopAnimationTimeout = setTimeout(() => {
-          controls.start('normal')
+          controls.start("normal");
         }, 1000);
       }, 0);
 
       return () => {
         if (stopAnimationTimeout) {
-          clearTimeout(stopAnimationTimeout)
+          clearTimeout(stopAnimationTimeout);
         }
 
         if (mountTimeout) {
-          clearTimeout(mountTimeout)
+          clearTimeout(mountTimeout);
         }
-      }
-    }, [controls])
+      };
+    }, [controls]);
 
     useImperativeHandle(ref, () => {
       isControlledRef.current = true;
 
       return {
-        startAnimation: () => controls.start('animate'),
-        stopAnimation: () => controls.start('normal'),
+        startAnimation: () => controls.start("animate"),
+        stopAnimation: () => controls.start("normal"),
       };
     });
 
     return (
-      <div
-        className={cn(className)}
-        {...props}
-      >
+      <div className={cn(className)} {...props}>
+        {/** biome-ignore lint/a11y/noSvgWithoutTitle: It doesn't have title */}
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width={size}
@@ -69,9 +73,9 @@ const AnimatedLogo = forwardRef<AnimatedLogoHandle, Props>(
           <path d="M2 10v3" />
           <motion.path
             variants={{
-              normal: { d: 'M6 6v11' },
+              normal: { d: "M6 6v11" },
               animate: {
-                d: ['M6 6v11', 'M6 10v3', 'M6 6v11'],
+                d: ["M6 6v11", "M6 10v3", "M6 6v11"],
                 transition: {
                   duration: 1.5,
                   repeat: Infinity,
@@ -83,9 +87,9 @@ const AnimatedLogo = forwardRef<AnimatedLogoHandle, Props>(
           />
           <motion.path
             variants={{
-              normal: { d: 'M10 3v18' },
+              normal: { d: "M10 3v18" },
               animate: {
-                d: ['M10 3v18', 'M10 9v5', 'M10 3v18'],
+                d: ["M10 3v18", "M10 9v5", "M10 3v18"],
                 transition: {
                   duration: 1,
                   repeat: Infinity,
@@ -97,9 +101,9 @@ const AnimatedLogo = forwardRef<AnimatedLogoHandle, Props>(
           />
           <motion.path
             variants={{
-              normal: { d: 'M14 8v7' },
+              normal: { d: "M14 8v7" },
               animate: {
-                d: ['M14 8v7', 'M14 6v11', 'M14 8v7'],
+                d: ["M14 8v7", "M14 6v11", "M14 8v7"],
                 transition: {
                   duration: 0.8,
                   repeat: Infinity,
@@ -111,9 +115,9 @@ const AnimatedLogo = forwardRef<AnimatedLogoHandle, Props>(
           />
           <motion.path
             variants={{
-              normal: { d: 'M18 5v13' },
+              normal: { d: "M18 5v13" },
               animate: {
-                d: ['M18 5v13', 'M18 7v9', 'M18 5v13'],
+                d: ["M18 5v13", "M18 7v9", "M18 5v13"],
                 transition: {
                   duration: 1.5,
                   repeat: Infinity,
@@ -127,9 +131,9 @@ const AnimatedLogo = forwardRef<AnimatedLogoHandle, Props>(
         </svg>
       </div>
     );
-  }
+  },
 );
 
-AnimatedLogo.displayName = 'AnimatedLogo';
+AnimatedLogo.displayName = "AnimatedLogo";
 
 export { AnimatedLogo };

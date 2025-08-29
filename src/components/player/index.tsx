@@ -1,29 +1,27 @@
-"use client"
+"use client";
 
-import { useAtomValue } from 'jotai'
+import { useAtomValue } from "jotai";
 
-import { currentTrackAtom } from '@/atoms/player'
+import { currentTrackAtom } from "@/atoms/player";
 
-import { AudioLoader } from './components/audio-loader'
-import { PlayPauseButton } from './components/play-pause-button'
-import { CurrentTime } from './components/current-time'
-import { Duration } from './components/duration'
-import { SeekBar } from './components/seekbar'
-import { VolumeControl } from './components/volume'
-import { CurrentTrack } from './components/current-track'
+import { AudioLoader } from "./components/audio-loader";
+import { CurrentTime } from "./components/current-time";
+import { CurrentTrack } from "./components/current-track";
+import { Duration } from "./components/duration";
+import { PlayPauseButton } from "./components/play-pause-button";
+import { SeekBar } from "./components/seekbar";
+import { VolumeControl } from "./components/volume";
 
 export function Player() {
-  const track = useAtomValue(currentTrackAtom)
+  const track = useAtomValue(currentTrackAtom);
 
   if (!track) {
-    return null
+    return null;
   }
 
   return (
     <div className="w-full max-w-5xl mx-auto px-4 pb-4">
-      <div
-        className="flex flex-col gap-2 p-4 border rounded-xl bg-gradient-to-tr from-zinc-950 to-zinc-800 border-zinc-800"
-      >
+      <div className="flex flex-col gap-2 p-4 border rounded-xl bg-gradient-to-tr from-zinc-950 to-zinc-800 border-zinc-800">
         <AudioLoader />
 
         <div className="grid grid-cols-3 items-center">
@@ -48,5 +46,5 @@ export function Player() {
         </div>
       </div>
     </div>
-  )
+  );
 }

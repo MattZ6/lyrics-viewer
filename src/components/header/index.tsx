@@ -7,5 +7,5 @@ export function Header() {
         <Brand />
       </div>
     </header>
-  )
+  );
 }

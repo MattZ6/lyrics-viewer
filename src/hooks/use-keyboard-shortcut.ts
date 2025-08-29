@@ -17,10 +17,7 @@ function parseCombo(combo: string) {
   };
 
   const mainKey = parts
-    .find(
-      (p) =>
-        !["ctrl", "shift", "alt", "meta"].includes(p.toLowerCase())
-    )
+    .find((p) => !["ctrl", "shift", "alt", "meta"].includes(p.toLowerCase()))
     ?.toLowerCase();
 
   return { ...modifiers, key: mainKey };
@@ -39,24 +36,20 @@ function matchKeyCombo(event: KeyboardEvent, combo: string) {
 }
 
 function isInputFocused(event: KeyboardEvent) {
-  const target = event.target as HTMLElement
-  const tag = target.tagName
+  const target = event.target as HTMLElement;
+  const tag = target.tagName;
 
-  return (
-    tag === "INPUT" ||
-    tag === "TEXTAREA" ||
-    target.isContentEditable
-  )
+  return tag === "INPUT" || tag === "TEXTAREA" || target.isContentEditable;
 }
 
 export function useKeyboardShortcut(
   keys: KeyCombo,
-  callback: (event: KeyboardEvent) => void
+  callback: (event: KeyboardEvent) => void,
 ) {
   useEffect(() => {
     function handleKeydown(event: KeyboardEvent) {
       if (isInputFocused(event)) {
-        return
+        return;
       }
 
       if (Array.isArray(keys)) {

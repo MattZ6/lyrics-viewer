@@ -5,5 +5,5 @@ export function Footer() {
     <footer>
       <Player />
     </footer>
-  )
+  );
 }

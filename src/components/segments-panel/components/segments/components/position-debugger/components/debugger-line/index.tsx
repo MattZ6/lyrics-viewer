@@ -1,22 +1,23 @@
-import { useLayoutEffect, useRef, type RefObject } from "react"
-import { useAtomValue } from "jotai"
+import { useAtomValue } from "jotai";
+import { type RefObject, useLayoutEffect, useRef } from "react";
 
-import { scrollAnchorAtom } from "@/atoms/segment-view"
+import { scrollAnchorAtom } from "@/atoms/segment-view";
 
 type Props = {
-  scrollableContainerRef: RefObject<HTMLUListElement | null>
-}
+  scrollableContainerRef: RefObject<HTMLUListElement | null>;
+};
 
 export function DebuggerLine({ scrollableContainerRef }: Props) {
-  const debuggerRef = useRef<HTMLDivElement>(null)
-  const scrollAnchor = useAtomValue(scrollAnchorAtom)
+  const debuggerRef = useRef<HTMLDivElement>(null);
+  const scrollAnchor = useAtomValue(scrollAnchorAtom);
 
   useLayoutEffect(() => {
     if (debuggerRef.current && scrollableContainerRef.current) {
-      const scrollableContentHeight = scrollableContainerRef.current?.clientHeight ?? 0;
+      const scrollableContentHeight =
+        scrollableContainerRef.current?.clientHeight ?? 0;
       debuggerRef.current.style.top = `${scrollableContentHeight * scrollAnchor}px`;
     }
-  }, [scrollAnchor, scrollableContainerRef])
+  }, [scrollAnchor, scrollableContainerRef]);
 
   return (
     <div
@@ -25,5 +26,5 @@ export function DebuggerLine({ scrollableContainerRef }: Props) {
     >
       Scroll anchor position ({scrollAnchor * 100}%)
     </div>
-  )
+  );
 }

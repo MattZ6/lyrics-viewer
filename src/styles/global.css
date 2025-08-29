@@ -121,7 +121,7 @@
 }
 
 .root {
-  isolation: isolate
+  isolation: isolate;
 }
 
 body,
@@ -130,10 +130,8 @@ html {
 }
 
 body {
-  height: 100vh;
   height: 100dvh;
-
-  background: linear-gradient(25deg, var(--color-black), var(--color-zinc-800) )
+  background: linear-gradient(25deg, var(--color-black), var(--color-zinc-800));
 }
 
 /* width */
@@ -142,7 +140,6 @@ body {
 }
 
 @media screen and (min-width: 768px) {
-
   /* width */
   ::-webkit-scrollbar {
     width: 8px;

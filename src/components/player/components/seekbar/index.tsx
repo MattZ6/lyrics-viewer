@@ -1,215 +1,222 @@
+import { useAtom, useAtomValue } from "jotai";
 import {
   memo,
+  type PointerEvent,
   useCallback,
   useLayoutEffect,
   useRef,
   useState,
-  type PointerEvent,
-} from 'react'
-import { useAtom, useAtomValue } from 'jotai'
+} from "react";
+import { audioRefAtom, currentTimeAtom, durationAtom } from "@/atoms/player";
+import { useKeyboardShortcut } from "@/hooks/use-keyboard-shortcut";
+import { useTrackMarkerSections } from "@/hooks/use-track-marker-sections";
+import { cn } from "@/lib/utils";
 
-import { useKeyboardShortcut } from '@/hooks/use-keyboard-shortcut'
-import { useTrackMarkerSections } from '@/hooks/use-track-marker-sections'
-
-import {
-  audioRefAtom,
-  currentTimeAtom,
-  durationAtom,
-} from '@/atoms/player'
-import { cn } from '@/lib/utils'
-
-const THUMB_ID = 'seek-bar-thumb'
-const SEEK_STEP = 5
-const SEEK_STEP_SHIFT = 10
+const THUMB_ID = "seek-bar-thumb";
+const SEEK_STEP = 5;
+const SEEK_STEP_SHIFT = 10;
 
 export function SeekBar() {
-  const audioRef = useAtomValue(audioRefAtom)
-  const duration = useAtomValue(durationAtom)
-  const [currentTime, setCurrentTime] = useAtom(currentTimeAtom)
+  const audioRef = useAtomValue(audioRefAtom);
+  const duration = useAtomValue(durationAtom);
+  const [currentTime, setCurrentTime] = useAtom(currentTimeAtom);
 
-  const barRef = useRef<HTMLDivElement>(null)
-  const thumbRef = useRef<HTMLButtonElement>(null)
+  const barRef = useRef<HTMLDivElement>(null);
+  const thumbRef = useRef<HTMLButtonElement>(null);
 
-  const [isDragging, setIsDragging] = useState(false)
-  const [showThumb, setShowThumb] = useState(false)
-  const [dragTime, setDragTime] = useState<number | null>(null)
-  const [hoverTime, setHoverTime] = useState<number | null>(null)
-  const [seekFeedback, setSeekFeedback] = useState<string | null>(null)
-  const [isSeekingTransiently, setIsSeekingTransiently] = useState(false)
+  const [isDragging, setIsDragging] = useState(false);
+  const [showThumb, setShowThumb] = useState(false);
+  const [dragTime, setDragTime] = useState<number | null>(null);
+  const [hoverTime, setHoverTime] = useState<number | null>(null);
+  const [seekFeedback, setSeekFeedback] = useState<string | null>(null);
+  const [isSeekingTransiently, setIsSeekingTransiently] = useState(false);
 
-  const effectiveTime = dragTime ?? currentTime
-  const percentage = duration > 0 ? (effectiveTime / duration) * 100 : 0
-  const seekTranslateXValue = 100 - percentage
+  const effectiveTime = dragTime ?? currentTime;
+  const percentage = duration > 0 ? (effectiveTime / duration) * 100 : 0;
+  const seekTranslateXValue = 100 - percentage;
 
-  const previewPercentage = duration > 0 && hoverTime !== null
-    ? (hoverTime / duration) * 100
-    : null
+  const previewPercentage =
+    duration > 0 && hoverTime !== null ? (hoverTime / duration) * 100 : null;
 
   const updateThumbPosition = useCallback(
     (time: number) => {
-      if (!barRef.current || !thumbRef.current) return
-      const barRect = barRef.current.getBoundingClientRect()
-      const thumbX = (time / duration) * barRect.width
-      const scale = showThumb ? 1 : 0
+      if (!barRef.current || !thumbRef.current) return;
+      const barRect = barRef.current.getBoundingClientRect();
+      const thumbX = (time / duration) * barRect.width;
+      const scale = showThumb ? 1 : 0;
 
-      thumbRef.current.style.transform = `translateX(${thumbX - 8}px) translateY(-50%) scale(${scale})`
+      thumbRef.current.style.transform = `translateX(${thumbX - 8}px) translateY(-50%) scale(${scale})`;
     },
-    [duration, showThumb]
-  )
+    [duration, showThumb],
+  );
 
   useLayoutEffect(() => {
-    const barEl = barRef.current
-    if (!barEl) return
+    const barEl = barRef.current;
+    if (!barEl) return;
 
-    const handleEnter = () => setShowThumb(true)
+    const handleEnter = () => setShowThumb(true);
     const handleLeave = () => {
-      if (!isDragging) setShowThumb(false)
-      setHoverTime(null)
-    }
+      if (!isDragging) setShowThumb(false);
+      setHoverTime(null);
+    };
 
     const handleMove = (e: MouseEvent) => {
-      if (!barRef.current || duration === 0) return
-      const rect = barRef.current.getBoundingClientRect()
-      const x = Math.min(Math.max(e.clientX - rect.left, 0), rect.width)
-      const time = (x / rect.width) * duration
-      setHoverTime(time)
-    }
+      if (!barRef.current || duration === 0) return;
+      const rect = barRef.current.getBoundingClientRect();
+      const x = Math.min(Math.max(e.clientX - rect.left, 0), rect.width);
+      const time = (x / rect.width) * duration;
+      setHoverTime(time);
+    };
 
-    barEl.addEventListener('mouseenter', handleEnter)
-    barEl.addEventListener('mouseleave', handleLeave)
-    barEl.addEventListener('mousemove', handleMove)
+    barEl.addEventListener("mouseenter", handleEnter);
+    barEl.addEventListener("mouseleave", handleLeave);
+    barEl.addEventListener("mousemove", handleMove);
 
     return () => {
-      barEl.removeEventListener('mouseenter', handleEnter)
-      barEl.removeEventListener('mouseleave', handleLeave)
-      barEl.removeEventListener('mousemove', handleMove)
-    }
-  }, [isDragging, duration])
+      barEl.removeEventListener("mouseenter", handleEnter);
+      barEl.removeEventListener("mouseleave", handleLeave);
+      barEl.removeEventListener("mousemove", handleMove);
+    };
+  }, [isDragging, duration]);
 
   useLayoutEffect(() => {
     if (!isDragging) {
-      updateThumbPosition(currentTime)
+      updateThumbPosition(currentTime);
     }
-  }, [currentTime, duration, isDragging, updateThumbPosition])
+  }, [currentTime, isDragging, updateThumbPosition]);
 
-  const startSeeking = useCallback((clientX: number) => {
-    if (!barRef.current || duration === 0 || !thumbRef.current) return
+  const startSeeking = useCallback(
+    (clientX: number) => {
+      if (!barRef.current || duration === 0 || !thumbRef.current) return;
 
-    const barRect = barRef.current.getBoundingClientRect()
-    const clampedX = Math.min(Math.max(clientX - barRect.left, 0), barRect.width)
-    const initialTime = (clampedX / barRect.width) * duration
+      const barRect = barRef.current.getBoundingClientRect();
+      const clampedX = Math.min(
+        Math.max(clientX - barRect.left, 0),
+        barRect.width,
+      );
+      const initialTime = (clampedX / barRect.width) * duration;
 
-    setIsDragging(true)
-    setDragTime(initialTime)
+      setIsDragging(true);
+      setDragTime(initialTime);
 
-    thumbRef.current.classList.remove('transition-transform')
-    updateThumbPosition(initialTime)
+      thumbRef.current.classList.remove("transition-transform");
+      updateThumbPosition(initialTime);
 
-    const handleMove = (event: PointerEvent | MouseEvent) => {
-      const x = (event as PointerEvent).clientX ?? (event as MouseEvent).clientX
-      const clamped = Math.min(Math.max(x - barRect.left, 0), barRect.width)
-      const time = (clamped / barRect.width) * duration
+      const handleMove = (event: PointerEvent | MouseEvent) => {
+        const x =
+          (event as PointerEvent).clientX ?? (event as MouseEvent).clientX;
+        const clamped = Math.min(Math.max(x - barRect.left, 0), barRect.width);
+        const time = (clamped / barRect.width) * duration;
 
-      setDragTime(time)
-      updateThumbPosition(time)
-    }
+        setDragTime(time);
+        updateThumbPosition(time);
+      };
 
-    const handleUp = (event: PointerEvent | MouseEvent) => {
-      const x = (event as PointerEvent).clientX ?? (event as MouseEvent).clientX
-      const clamped = Math.min(Math.max(x - barRect.left, 0), barRect.width)
-      const finalTime = (clamped / barRect.width) * duration
+      const handleUp = (event: PointerEvent | MouseEvent) => {
+        const x =
+          (event as PointerEvent).clientX ?? (event as MouseEvent).clientX;
+        const clamped = Math.min(Math.max(x - barRect.left, 0), barRect.width);
+        const finalTime = (clamped / barRect.width) * duration;
 
-      setIsDragging(false)
-      setDragTime(null)
-      setCurrentTime(finalTime)
-      setHoverTime(null)
+        setIsDragging(false);
+        setDragTime(null);
+        setCurrentTime(finalTime);
+        setHoverTime(null);
 
-      if (audioRef) {
-        audioRef.currentTime = finalTime
-      }
+        if (audioRef) {
+          audioRef.currentTime = finalTime;
+        }
 
-      setTimeout(() => {
-        thumbRef.current?.classList.add('transition-transform')
-      }, 0)
+        setTimeout(() => {
+          thumbRef.current?.classList.add("transition-transform");
+        }, 0);
 
-      window.removeEventListener('pointermove', handleMove)
-      window.removeEventListener('pointerup', handleUp)
-    }
+        window.removeEventListener("pointermove", handleMove);
+        window.removeEventListener("pointerup", handleUp);
+      };
 
-    window.addEventListener('pointermove', handleMove)
-    window.addEventListener('pointerup', handleUp)
-  }, [audioRef, duration, setCurrentTime, updateThumbPosition])
+      window.addEventListener("pointermove", handleMove);
+      window.addEventListener("pointerup", handleUp);
+    },
+    [audioRef, duration, setCurrentTime, updateThumbPosition],
+  );
 
   const handleBarPointerDown = (e: PointerEvent<HTMLDivElement>) => {
-    if ((e.target as HTMLElement).id === THUMB_ID) return
-    e.preventDefault()
-    startSeeking(e.clientX)
-  }
+    if ((e.target as HTMLElement).id === THUMB_ID) return;
+    e.preventDefault();
+    startSeeking(e.clientX);
+  };
 
   const handleThumbPointerDown = (e: PointerEvent<HTMLButtonElement>) => {
-    e.preventDefault()
-    e.stopPropagation()
-    startSeeking(e.clientX)
-  }
+    e.preventDefault();
+    e.stopPropagation();
+    startSeeking(e.clientX);
+  };
 
-  const showSeekFeedback = (text: string) => {
-    setSeekFeedback(text)
-    setIsSeekingTransiently(true)
+  const showSeekFeedback = useCallback((text: string) => {
+    setSeekFeedback(text);
+    setIsSeekingTransiently(true);
 
     setTimeout(() => {
-      setSeekFeedback(null)
-      setIsSeekingTransiently(false)
-    }, 600)
-  }
+      setSeekFeedback(null);
+      setIsSeekingTransiently(false);
+    }, 600);
+  }, []);
 
-  const handleRewind = useCallback((stepInSeconds: number) => {
-    if (!audioRef) {
-      return
-    }
+  const handleRewind = useCallback(
+    (stepInSeconds: number) => {
+      if (!audioRef) {
+        return;
+      }
 
-    const newTime = Math.max(audioRef.currentTime - stepInSeconds, 0)
-    audioRef.currentTime = newTime
-    setCurrentTime(newTime)
+      const newTime = Math.max(audioRef.currentTime - stepInSeconds, 0);
+      audioRef.currentTime = newTime;
+      setCurrentTime(newTime);
 
-    showSeekFeedback(`-${stepInSeconds}s`);
+      showSeekFeedback(`-${stepInSeconds}s`);
 
-    setDragTime(null)
-    setHoverTime(null)
-  }, [audioRef, setCurrentTime])
+      setDragTime(null);
+      setHoverTime(null);
+    },
+    [audioRef, setCurrentTime, showSeekFeedback],
+  );
 
-  const handleFastForward = useCallback((stepInSeconds: number) => {
-    if (!audioRef) {
-      return
-    }
+  const handleFastForward = useCallback(
+    (stepInSeconds: number) => {
+      if (!audioRef) {
+        return;
+      }
 
-    const newTime = Math.min(audioRef.currentTime + stepInSeconds, duration)
-    audioRef.currentTime = newTime
-    setCurrentTime(newTime)
+      const newTime = Math.min(audioRef.currentTime + stepInSeconds, duration);
+      audioRef.currentTime = newTime;
+      setCurrentTime(newTime);
 
-    showSeekFeedback(`+${stepInSeconds}s`);
+      showSeekFeedback(`+${stepInSeconds}s`);
 
-    setDragTime(null)
-    setHoverTime(null)
-  }, [audioRef, duration, setCurrentTime])
+      setDragTime(null);
+      setHoverTime(null);
+    },
+    [audioRef, duration, setCurrentTime, showSeekFeedback],
+  );
 
   useKeyboardShortcut(["ArrowLeft"], (event) => {
-    event.preventDefault()
-    handleRewind(SEEK_STEP)
+    event.preventDefault();
+    handleRewind(SEEK_STEP);
   });
 
   useKeyboardShortcut(["ArrowRight"], (event) => {
-    event.preventDefault()
-    handleFastForward(SEEK_STEP)
+    event.preventDefault();
+    handleFastForward(SEEK_STEP);
   });
 
   useKeyboardShortcut(["Shift+ArrowLeft"], (event) => {
-    event.preventDefault()
-    handleRewind(SEEK_STEP_SHIFT)
+    event.preventDefault();
+    handleRewind(SEEK_STEP_SHIFT);
   });
 
   useKeyboardShortcut(["Shift+ArrowRight"], (event) => {
-    event.preventDefault()
-    handleFastForward(SEEK_STEP_SHIFT)
+    event.preventDefault();
+    handleFastForward(SEEK_STEP_SHIFT);
   });
 
   const showHoverBar = previewPercentage !== null && !isDragging;
@@ -217,12 +224,11 @@ export function SeekBar() {
   return (
     <div
       ref={barRef}
-      className={`relative w-full py-4 group ${isDragging ? 'cursor-grabbing' : 'cursor-pointer'}`}
+      className={`relative w-full py-4 group ${isDragging ? "cursor-grabbing" : "cursor-pointer"}`}
       onPointerDown={handleBarPointerDown}
     >
       {/* Barra de fundo */}
       <div className="w-full h-1.5 bg-zinc-800 rounded overflow-hidden cursor-pointer relative">
-
         {/* Barra de preview (hover) */}
         {showHoverBar && (
           <div
@@ -238,7 +244,9 @@ export function SeekBar() {
         <div
           className={cn(
             "relative h-full rounded-full transition-colors z-1",
-            isDragging ? 'bg-gradient-to-r from-zinc-700 to-zinc-500' : 'bg-gradient-to-r from-zinc-700 to-zinc-50',
+            isDragging
+              ? "bg-gradient-to-r from-zinc-700 to-zinc-500"
+              : "bg-gradient-to-r from-zinc-700 to-zinc-50",
           )}
           style={{
             transform: `translateX(-${seekTranslateXValue}%)`,
@@ -247,9 +255,7 @@ export function SeekBar() {
       </div>
 
       {seekFeedback && (
-        <div
-          className="absolute left-1/2 -translate-x-1/2 translate-y-2 text-sm px-2 py-1 rounded shadow-md bg-white/10 text-white/56 animate-in transition-all animate-fade-out pointer-events-none"
-        >
+        <div className="absolute left-1/2 -translate-x-1/2 translate-y-2 text-sm px-2 py-1 rounded shadow-md bg-white/10 text-white/56 animate-in transition-all animate-fade-out pointer-events-none">
           {seekFeedback}
         </div>
       )}
@@ -264,8 +270,11 @@ export function SeekBar() {
         type="button"
         className={cn(
           "absolute top-1/2 size-4 bg-zinc-300 rounded-full z-20 shadow-md",
-          showThumb && !isDragging && !isSeekingTransiently && 'transition-transform',
-          isDragging ? 'cursor-grabbing' : 'cursor-pointer'
+          showThumb &&
+            !isDragging &&
+            !isSeekingTransiently &&
+            "transition-transform",
+          isDragging ? "cursor-grabbing" : "cursor-pointer",
         )}
         style={{
           transform: `translateX(0px) translateY(-50%) scale(${showThumb ? 1 : 0})`,
@@ -275,22 +284,22 @@ export function SeekBar() {
         aria-hidden
       />
     </div>
-  )
+  );
 }
 
 export const MarkerDivisions = memo(function MarkerDivisions() {
-  const markerSections = useTrackMarkerSections()
-  const duration = useAtomValue(durationAtom)
+  const markerSections = useTrackMarkerSections();
+  const duration = useAtomValue(durationAtom);
 
   if (!markerSections.length || duration === 0) {
-    return null
+    return null;
   }
 
   return (
     <>
       {markerSections.map((section, index) => (
         <MarkerDivision
-          key={index}
+          key={String(index)}
           label={section.label}
           left={(section.startTime / duration) * 100}
           width={((section.endTime - section.startTime) / duration) * 100}
@@ -298,20 +307,21 @@ export const MarkerDivisions = memo(function MarkerDivisions() {
         />
       ))}
     </>
-  )
-})
+  );
+});
 
 type MarkerDivisionProps = {
-  label: string
-  left: number
-  width: number
-  isLast: boolean
-}
+  label: string;
+  left: number;
+  width: number;
+  isLast: boolean;
+};
 
 export function MarkerDivision({ label, left, width }: MarkerDivisionProps) {
-  const [showLabel, setShowLabel] = useState(false)
+  const [showLabel, setShowLabel] = useState(false);
 
   return (
+    // biome-ignore lint/a11y/noStaticElementInteractions: Needs to show some info when mouse is over the element
     <div
       key={`${label}_${left}`}
       className={cn(
@@ -331,5 +341,5 @@ export function MarkerDivision({ label, left, width }: MarkerDivisionProps) {
         {label}
       </span>
     </div>
-  )
+  );
 }
