@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { scrollAnchorAtom } from "@/atoms/segment-view";
 
 export function useSegmentsScrollPadding(
-  lyricHeight = 48,     // altura média do segmento de letra (em px)
-  markerHeight = 24     // altura média do marker (em px)
+  lyricHeight = 48, // altura média do segmento de letra (em px)
+  markerHeight = 24, // altura média do marker (em px)
 ) {
   const anchor = useAtomValue(scrollAnchorAtom);
   const [topPadding, setTopPadding] = useState(0);

@@ -1,6 +1,6 @@
+import { Controls } from "@/components/controls";
 import { Header } from "@/components/header";
 import { SegmentsPanel } from "@/components/segments-panel";
-import { Controls } from "@/components/controls";
 
 import { Footer } from "./components/footer";
 
@@ -15,5 +15,5 @@ export function HomePage() {
 
       <Footer />
     </div>
-  )
+  );
 }

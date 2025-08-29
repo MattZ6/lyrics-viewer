@@ -8,5 +8,5 @@ export function Brand() {
       <AnimatedLogo size={24} />
       <span className="font-medium text-base select-none">{env.appName}</span>
     </div>
-  )
+  );
 }

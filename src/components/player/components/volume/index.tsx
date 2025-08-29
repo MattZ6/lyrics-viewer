@@ -1,56 +1,55 @@
-import { useCallback, useEffect, useMemo } from "react";
 import { useAtom, useAtomValue } from "jotai";
 import { Volume, Volume1, Volume2, VolumeX } from "lucide-react";
+import { useCallback, useEffect, useMemo } from "react";
 
 import { audioRefAtom, volumeAtom } from "@/atoms/player";
 
 import { Slider } from "@/components/ui/slider";
 
 export function VolumeControl() {
-  const audioRef = useAtomValue(audioRefAtom)
-  const [volume, setVolume] = useAtom(volumeAtom)
+  const audioRef = useAtomValue(audioRefAtom);
+  const [volume, setVolume] = useAtom(volumeAtom);
 
   const handleVolumeChange = useCallback(
     ([value]: number[]) => {
       if (audioRef) {
-        audioRef.volume = value
+        audioRef.volume = value;
       }
     },
-    [audioRef]
-  )
+    [audioRef],
+  );
 
   const Icon = useMemo(() => {
     if (volume > 0.6) {
-      return Volume2
+      return Volume2;
     }
 
     if (volume > 0.25) {
-      return Volume1
+      return Volume1;
     }
 
     if (volume > 0) {
-      return Volume
+      return Volume;
     }
 
-
-    return VolumeX
-  }, [volume])
+    return VolumeX;
+  }, [volume]);
 
   useEffect(() => {
     if (!audioRef) {
-      return
+      return;
     }
 
     const handler = () => {
-      setVolume(audioRef.volume)
-    }
+      setVolume(audioRef.volume);
+    };
 
-    audioRef.addEventListener('volumechange', handler)
+    audioRef.addEventListener("volumechange", handler);
 
     return () => {
-      audioRef.removeEventListener('volumechange', handler)
-    }
-  }, [audioRef, setVolume])
+      audioRef.removeEventListener("volumechange", handler);
+    };
+  }, [audioRef, setVolume]);
 
   return (
     <div className="flex items-center gap-2">
@@ -64,5 +63,5 @@ export function VolumeControl() {
         onValueChange={handleVolumeChange}
       />
     </div>
-  )
+  );
 }

@@ -7,5 +7,5 @@ export function TranslationSection() {
 
       <ShowTranslationToggle />
     </div>
-  )
+  );
 }

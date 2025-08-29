@@ -1,103 +1,107 @@
-"use client"
+"use client";
 
-import { createRef, useLayoutEffect, useRef } from "react";
 import { useAtomValue } from "jotai";
+import { createRef, useLayoutEffect, useRef } from "react";
 
 import { audioRefAtom, type Segment } from "@/atoms/player";
-import { showTranslatedTextAtom } from "@/atoms/segment-view";
 import { currentSegmentIndexAtom } from "@/atoms/segment";
-
-import { useScrollToSegment } from "@/hooks/use-scroll-to-segment";
+import { showTranslatedTextAtom } from "@/atoms/segment-view";
 import { useKeyboardShortcut } from "@/hooks/use-keyboard-shortcut";
+import { useScrollToSegment } from "@/hooks/use-scroll-to-segment";
 
 import { cn } from "@/lib/utils";
-
-import { MarkerSegment } from "./components/marker";
 import { LyricSegment } from "./components/lyric";
+import { MarkerSegment } from "./components/marker";
 import { PositionDebugger } from "./components/position-debugger";
 
 type Props = {
-  segments: Segment[]
-}
+  segments: Segment[];
+};
 
 function findPreviousLyric(segments: Segment[], currentIndex: number) {
   for (let i = currentIndex - 1; i >= 0; i--) {
-    const segment = segments[i]
+    const segment = segments[i];
 
     if (segment.type === "lyric") {
-      return segment
+      return segment;
     }
   }
 
-  return null
+  return null;
 }
 
 function findNextLyric(segments: Segment[], currentIndex: number) {
   for (let i = currentIndex + 1; i < segments.length; i++) {
-    const segment = segments[i]
+    const segment = segments[i];
 
     if (segment.type === "lyric") {
-      return segment
+      return segment;
     }
   }
 
-  return null
+  return null;
 }
 
 export function Segments({ segments }: Props) {
-  const topSpacerRef = useRef<HTMLLIElement>(null)
-  const bottomSpacerRef = useRef<HTMLLIElement>(null)
+  const topSpacerRef = useRef<HTMLLIElement>(null);
+  const bottomSpacerRef = useRef<HTMLLIElement>(null);
 
-  const audioRef = useAtomValue(audioRefAtom)
-  const showTranslatedSegmentText = useAtomValue(showTranslatedTextAtom)
-  const selectedSegmentIndex = useAtomValue(currentSegmentIndexAtom)
+  const audioRef = useAtomValue(audioRefAtom);
+  const showTranslatedSegmentText = useAtomValue(showTranslatedTextAtom);
+  const selectedSegmentIndex = useAtomValue(currentSegmentIndexAtom);
 
   const scrollableContainerRef = useRef<HTMLUListElement | null>(null);
-  const segmentsRef = useRef(
-    segments.map(() => createRef<HTMLLIElement>())
+  const segmentsRef = useRef(segments.map(() => createRef<HTMLLIElement>()));
+
+  useScrollToSegment(
+    selectedSegmentIndex,
+    scrollableContainerRef,
+    segmentsRef.current,
   );
 
-  useScrollToSegment(selectedSegmentIndex, scrollableContainerRef, segmentsRef.current);
-
   useLayoutEffect(() => {
-    if (scrollableContainerRef.current && topSpacerRef.current && bottomSpacerRef.current) {
+    if (
+      scrollableContainerRef.current &&
+      topSpacerRef.current &&
+      bottomSpacerRef.current
+    ) {
       const spacersHeight = scrollableContainerRef.current.clientHeight * 0.7;
 
       topSpacerRef.current.style.height = `${spacersHeight}px`;
       bottomSpacerRef.current.style.height = `${spacersHeight}px`;
     }
-  }, [])
+  }, []);
 
   useKeyboardShortcut(["ArrowUp"], (event) => {
-    event.preventDefault()
+    event.preventDefault();
 
-    const segment = findPreviousLyric(segments, selectedSegmentIndex)
+    const segment = findPreviousLyric(segments, selectedSegmentIndex);
 
     if (!segment) {
-      return
+      return;
     }
 
     if (!audioRef) {
-      return
+      return;
     }
 
-    audioRef.currentTime = segment.time
+    audioRef.currentTime = segment.time;
   });
 
   useKeyboardShortcut(["ArrowDown"], (event) => {
-    event.preventDefault()
+    event.preventDefault();
 
-    const segment = findNextLyric(segments, selectedSegmentIndex)
+    const segment = findNextLyric(segments, selectedSegmentIndex);
 
     if (!segment) {
-      return
+      return;
     }
 
     if (!audioRef) {
-      return
+      return;
     }
 
-    audioRef.currentTime = segment.time
+    audioRef.currentTime = segment.time;
   });
 
   return (
@@ -109,34 +113,35 @@ export function Segments({ segments }: Props) {
           "flex-1 flex flex-col items-center relative py-8 overflow-y-auto overflow-x-hidden h-full pl-2",
         )}
         style={{
-          WebkitMaskImage: "linear-gradient(to bottom, transparent, black 20%, black 90%, transparent)",
+          WebkitMaskImage:
+            "linear-gradient(to bottom, transparent, black 20%, black 90%, transparent)",
           WebkitMaskRepeat: "no-repeat",
           WebkitMaskSize: "100% 100%",
-          maskImage: "linear-gradient(to bottom, transparent, black 20%, black 90%, transparent)",
+          maskImage:
+            "linear-gradient(to bottom, transparent, black 20%, black 90%, transparent)",
           maskRepeat: "no-repeat",
           maskSize: "100% 100%",
         }}
       >
-        <li
-          ref={topSpacerRef}
-          className="w-full shrink-0"
-        />
+        <li ref={topSpacerRef} className="w-full shrink-0" />
 
         {segments.map((segment, index) => (
           <li
-            key={index}
+            key={String(index)}
             ref={segmentsRef.current[index]}
             className="flex items-center justify-center w-full"
           >
-            {segment.type === 'marker' && (
+            {segment.type === "marker" && (
               <MarkerSegment
                 segment={segment}
-                withTopSpacing={index > 0 && segments[index - 1].type === 'lyric'}
+                withTopSpacing={
+                  index > 0 && segments[index - 1].type === "lyric"
+                }
                 isPast={index + 1 < selectedSegmentIndex}
               />
             )}
 
-            {segment.type === 'lyric' && (
+            {segment.type === "lyric" && (
               <LyricSegment
                 segment={segment}
                 isPast={index < selectedSegmentIndex}
@@ -147,10 +152,7 @@ export function Segments({ segments }: Props) {
           </li>
         ))}
 
-        <li
-          ref={bottomSpacerRef}
-          className="w-full shrink-0"
-        />
+        <li ref={bottomSpacerRef} className="w-full shrink-0" />
       </ul>
 
       {/* <div className="absolute top-0 left-0 right-0 w-full h-10 shrink-0 bg-gradient-to-t from-background/25 to-background z-10" /> */}
@@ -158,5 +160,5 @@ export function Segments({ segments }: Props) {
 
       <PositionDebugger scrollableContainerRef={scrollableContainerRef} />
     </div>
-  )
+  );
 }
