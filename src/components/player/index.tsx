@@ -21,17 +21,17 @@ export function Player() {
 
   return (
     <div className="w-full max-w-5xl mx-auto px-4 pb-4">
-      <div className="flex flex-col gap-2 p-4 border rounded-xl bg-gradient-to-tr from-zinc-950 to-zinc-800 border-zinc-800">
+      <div className="flex flex-col md:gap-2 p-4 pb-0 md:pb-4 border rounded-xl bg-gradient-to-tr from-zinc-950 to-zinc-800 border-zinc-800">
         <AudioLoader />
 
-        <div className="grid grid-cols-3 items-center">
+        <div className="grid grid-cols-2 md:grid-cols-3 items-center">
           <CurrentTrack />
 
-          <div className="flex items-center justify-center gap-2">
+          <div className="flex items-center justify-end md:justify-center gap-2">
             <PlayPauseButton />
           </div>
 
-          <div className="flex items-center justify-end gap-2">
+          <div className="hidden md:flex items-center justify-end gap-2">
             <VolumeControl />
           </div>
         </div>
@@ -39,7 +39,7 @@ export function Player() {
         <div className="flex flex-col">
           <SeekBar />
 
-          <div className="flex items-center justify-between">
+          <div className="hidden md:flex items-center justify-between">
             <CurrentTime />
             <Duration />
           </div>
