@@ -22,11 +22,11 @@ export function CurrentTrack() {
         />
       </div>
 
-      <div className="flex flex-col">
-        <span className="font-medium text-zinc-200 selection:bg-zinc-50 selection:text-zinc-950">
+      <div className="flex flex-col gap-1 md:gap-0">
+        <span className="font-medium text-sm md:text-base text-zinc-200 selection:bg-zinc-50 selection:text-zinc-950">
           {track.title}
         </span>
-        <span className="font-normal text-sm text-zinc-400 selection:bg-zinc-50 selection:text-zinc-950">
+        <span className="font-normal text-xs md:text-sm text-zinc-400 selection:bg-zinc-50 selection:text-zinc-950">
           {track.band}
         </span>
       </div>
