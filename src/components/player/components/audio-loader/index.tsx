@@ -1,3 +1,5 @@
+"use client"
+
 import { useCallback, type SyntheticEvent } from 'react'
 import { useAtomValue, useSetAtom } from 'jotai'
 
@@ -37,8 +39,8 @@ export function AudioLoader() {
 
   return (
     <audio
-      src={track.audio}
       ref={handleSetAudioRef}
+      src={track.audio}
       onTimeUpdate={handleTimeUpdate}
       onLoadedMetadata={handleMetadataLoaded}
       preload="metadata"

@@ -120,10 +120,6 @@
   }
 }
 
-html {
-  font-family: "Poppins", sans-serif;
-}
-
 .root {
   isolation: isolate
 }

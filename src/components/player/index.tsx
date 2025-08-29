@@ -1,3 +1,5 @@
+"use client"
+
 import { useAtomValue } from 'jotai'
 
 import { currentTrackAtom } from '@/atoms/player'
