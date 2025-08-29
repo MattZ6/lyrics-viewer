@@ -14,7 +14,6 @@ export function HomePage() {
       <Controls />
 
       <Footer />
-
     </div>
   )
 }

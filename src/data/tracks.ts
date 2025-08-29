@@ -1,5 +1,4 @@
 import type { Track } from '@/atoms/player'
-import privilegio from '@/assets/likeatear-privilegio.mp3'
 
 export const tracks: Track[] = [
   {
@@ -7,7 +6,7 @@ export const tracks: Track[] = [
     title: 'Privilégio',
     band: 'Like a Tear',
     thumb: '/privilegio-thumb.jpg',
-    audio: privilegio,
+    audio: '/likeatear-privilegio.mp3',
     segments: [
       { type: 'marker', text: 'Intro' },
       { type: 'lyric', time: 0.00, text: 'Main melody 🎸' },

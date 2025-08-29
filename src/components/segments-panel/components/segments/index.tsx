@@ -1,3 +1,5 @@
+"use client"
+
 import { createRef, useLayoutEffect, useRef } from "react";
 import { useAtomValue } from "jotai";
 
