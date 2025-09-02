@@ -14,7 +14,7 @@ export function PositionDebuggerToggle() {
       htmlFor="debugger-toggle"
       className="flex items-center justify-between"
     >
-      <span className="text-sm text-zinc-400">Toggle debugger</span>
+      <span className="font-medium text-sm text-white selection:bg-white selection:text-black">Show debugger</span>
       <Switch
         id="debugger-toggle"
         className="cursor-pointer"
