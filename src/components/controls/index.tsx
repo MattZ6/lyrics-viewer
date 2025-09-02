@@ -1,20 +1,15 @@
 import { cn } from "@/lib/utils";
-import { ScrollAnchorSection } from "./components/scroll-anchor-section";
-import { TranslationSection } from "./components/translation-section";
+import { TranslationToggleControl } from "./components/translation-toggle-control";
 
 export function Controls() {
   return (
     <div
       className={cn(
-        "absolute top-40 right-8 hidden flex-col gap-4 min-w-3xs py-2 px-3 rounded-xl border shadow-sm z-10 bg-zinc-800 border-zinc-700",
-        "md:flex",
+        "flex flex-col gap-2 p-1 rounded-full bg-zinc-800 border border-zinc-700",
+        "absolute right-4 bottom-0 top-0 mb-[144px] self-center",
       )}
     >
-      <small className="text-xs text-zinc-400">Configurations</small>
-
-      <ScrollAnchorSection />
-
-      <TranslationSection />
+      <TranslationToggleControl />
     </div>
   );
 }
