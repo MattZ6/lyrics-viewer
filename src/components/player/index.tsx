@@ -21,7 +21,7 @@ export function Player() {
 
   return (
     <div className="w-full max-w-5xl mx-auto px-4 pb-4">
-      <div className="flex flex-col md:gap-2 p-4 pb-0 md:pb-4 border rounded-xl bg-gradient-to-tr from-zinc-950 to-zinc-800 border-zinc-800">
+      <div className="flex flex-col md:gap-2 p-3 md:p-4 pb-0 md:pb-4 border rounded-xl bg-gradient-to-tr from-zinc-950 to-zinc-800 border-zinc-800">
         <AudioLoader />
 
         <div className="grid grid-cols-2 md:grid-cols-3 items-center">
