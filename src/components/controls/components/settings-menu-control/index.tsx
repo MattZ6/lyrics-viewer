@@ -1,7 +1,6 @@
 "use client";
 
 import { Settings } from "lucide-react";
-
 import { Control } from "@/components/controls/components/control";
 import {
   Popover,
@@ -13,10 +12,15 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useWindowSize } from "@/hooks/use-window-size";
 import { PositionDebuggerToggle } from "./components/position-debugger-toggle";
 import { PositionSelector } from "./components/position-selector";
 
 export function SettingsMenuControl() {
+  const windowSize = useWindowSize();
+
+  const isMobile = Number(windowSize.width ?? 0) <= 768;
+
   return (
     <Popover>
       <Tooltip>
@@ -38,6 +42,7 @@ export function SettingsMenuControl() {
       <PopoverContent
         side="right"
         sideOffset={12}
+        align={isMobile ? "end" : "center"}
         className="flex flex-col gap-4"
       >
         <span className="text-xs text-white/56 selection:bg-white selection:text-black">

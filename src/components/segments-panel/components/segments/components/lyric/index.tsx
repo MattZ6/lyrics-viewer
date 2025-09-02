@@ -51,7 +51,7 @@ export const LyricSegment = memo(
           !isSelected && "hover:bg-zinc-900/50 focus-visible:bg-zinc-900/50",
           isPast && "scale-95 md:scale-90 active:scale-92 md:active:scale-90",
           isSelected &&
-            "scale-110 active:scale-105 md:active:scale-110 bg-zinc-900",
+            "scale-110 active:scale-105 md:active:scale-110 md:bg-zinc-900 not-md:bg-gradient-to-r not-md:from-zinc-800 not-md:to-transparent",
         )}
       >
         <span
