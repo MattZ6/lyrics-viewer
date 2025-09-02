@@ -12,7 +12,7 @@ export function CurrentTrack() {
 
   return (
     <div className="flex items-center gap-2">
-      <div className="size-12 rounded-md shrink-0 bg-black">
+      <div className="size-10 md:size-12 rounded-md shrink-0 bg-black">
         <Image
           src={track.thumb}
           alt=""
