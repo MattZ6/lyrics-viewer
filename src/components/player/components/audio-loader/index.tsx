@@ -1,6 +1,6 @@
 "use client";
 
-import { useAtomValue, useSetAtom } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { type SyntheticEvent, useCallback, useEffect, useState } from "react";
 
 import {
@@ -16,7 +16,7 @@ type MetadataLoadedEvent = SyntheticEvent<HTMLAudioElement, Event>;
 
 export function AudioLoader() {
   const track = useAtomValue(currentTrackAtom);
-  const setAudioRef = useSetAtom(audioRefAtom);
+  const [audioRef, setAudioRef] = useAtom(audioRefAtom);
   const setCurrentTime = useSetAtom(currentTimeAtom);
   const setDuration = useSetAtom(durationAtom);
 
@@ -84,6 +84,30 @@ export function AudioLoader() {
 
     loadAudioFile();
   }, [track.audio]);
+
+  useEffect(() => {
+    if ("mediaSession" in navigator && audioRef) {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: track.title,
+        artist: track.band,
+        album: "Privilégo (single version)",
+        artwork: [{ src: track.thumb, type: "image/jpeg", sizes: "128x128" }],
+      });
+
+      function handlePlay() {
+        audioRef?.play();
+      }
+
+      function handlePause() {
+        audioRef?.pause();
+      }
+
+      navigator.mediaSession.setActionHandler("play", handlePlay);
+      navigator.mediaSession.setActionHandler("pause", handlePause);
+
+      // TODO: Add more action handlers
+    }
+  }, [track, audioRef]);
 
   if (!fileUrl) {
     return null;
