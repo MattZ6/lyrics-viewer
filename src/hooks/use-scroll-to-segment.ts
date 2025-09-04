@@ -1,7 +1,13 @@
+"use client";
+
 import { useAtomValue } from "jotai";
-import { type RefObject, useEffect, useRef } from "react";
+import { type RefObject, useCallback, useLayoutEffect, useRef } from "react";
 
 import { scrollAnchorAtom, showTranslatedTextAtom } from "@/atoms/segment-view";
+
+type ScrollToSelectedSegmentInput = {
+  animate: boolean;
+};
 
 export function useScrollToSegment(
   selectedSegmentIndex: number,
@@ -11,20 +17,20 @@ export function useScrollToSegment(
   const showTranslatedText = useAtomValue(showTranslatedTextAtom);
   const scrollAnchor = useAtomValue(scrollAnchorAtom);
 
-  const prevSelectedIndexRef = useRef(selectedSegmentIndex);
-  const prevScrollAnchorRef = useRef(scrollAnchor);
+  const isFirstRenderRef = useRef(true);
+  const translationEnabledRef = useRef(showTranslatedText);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: If translation flag is marked, it needs to scroll to segment again
-  useEffect(() => {
-    const scrollContainerElement = scrollableContainerRef.current;
-    const segmentElement = segmentsRef[selectedSegmentIndex]?.current;
+  const scrollToSelectedSegment = useCallback(
+    ({ animate }: ScrollToSelectedSegmentInput = { animate: false }) => {
+      const scrollContainerElement = scrollableContainerRef.current;
+      const segmentElement = segmentsRef[selectedSegmentIndex]?.current;
 
-    if (!scrollContainerElement || !segmentElement) {
-      return;
-    }
+      if (!scrollContainerElement || !segmentElement) {
+        return;
+      }
 
-    const frame = requestAnimationFrame(() => {
-      // setTimeout(() => {
+      isFirstRenderRef.current = false;
+
       const scrollableContainerRect =
         scrollContainerElement.getBoundingClientRect();
       const segmentElementRect = segmentElement.getBoundingClientRect();
@@ -37,26 +43,30 @@ export function useScrollToSegment(
         scrollContainerElement.clientHeight * scrollAnchor +
         segmentElement.offsetHeight / 2;
 
-      // const selectedSegmentIndexChanged = prevSelectedIndexRef.current !== selectedSegmentIndex
-      // const scrollAnchorChanged = prevScrollAnchorRef.current !== scrollAnchor;
+      const newScrollPosition = currentScrollTop + offset;
 
       scrollContainerElement.scrollTo({
-        top: currentScrollTop + offset,
-        behavior: "smooth",
-        // behavior: !selectedSegmentIndexChanged && scrollAnchorChanged ? "instant" : "smooth",
+        top: newScrollPosition,
+        behavior: animate ? "smooth" : "instant",
       });
+    },
+    [
+      scrollAnchor,
+      selectedSegmentIndex,
+      scrollableContainerRef,
+      segmentsRef[selectedSegmentIndex]?.current,
+    ],
+  );
 
-      prevSelectedIndexRef.current = selectedSegmentIndex;
-      prevScrollAnchorRef.current = scrollAnchor;
-      // }, 0);
-    });
+  useLayoutEffect(() => {
+    scrollToSelectedSegment({ animate: !isFirstRenderRef.current });
+  }, [scrollToSelectedSegment]);
 
-    return () => cancelAnimationFrame(frame);
-  }, [
-    selectedSegmentIndex,
-    scrollAnchor,
-    scrollableContainerRef,
-    segmentsRef,
-    showTranslatedText,
-  ]);
+  useLayoutEffect(() => {
+    if (translationEnabledRef.current !== showTranslatedText) {
+      scrollToSelectedSegment({ animate: false });
+    }
+
+    translationEnabledRef.current = showTranslatedText;
+  }, [scrollToSelectedSegment, showTranslatedText]);
 }
