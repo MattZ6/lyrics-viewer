@@ -1,22 +1,20 @@
 "use client";
 
 import { useAtomValue } from "jotai";
-import { createRef, useLayoutEffect, useRef } from "react";
+import { createRef, useRef } from "react";
 
 import { audioRefAtom, type Segment } from "@/atoms/player";
 import { currentSegmentIndexAtom } from "@/atoms/segment";
 import { showTranslatedTextAtom } from "@/atoms/segment-view";
+
 import { useKeyboardShortcut } from "@/hooks/use-keyboard-shortcut";
 import { useScrollToSegment } from "@/hooks/use-scroll-to-segment";
 
 import { cn } from "@/lib/utils";
+
 import { LyricSegment } from "./components/lyric";
 import { MarkerSegment } from "./components/marker";
 import { PositionDebugger } from "./components/position-debugger";
-
-type Props = {
-  segments: Segment[];
-};
 
 function findPreviousLyric(segments: Segment[], currentIndex: number) {
   for (let i = currentIndex - 1; i >= 0; i--) {
@@ -42,10 +40,11 @@ function findNextLyric(segments: Segment[], currentIndex: number) {
   return null;
 }
 
-export function Segments({ segments }: Props) {
-  const topSpacerRef = useRef<HTMLLIElement>(null);
-  const bottomSpacerRef = useRef<HTMLLIElement>(null);
+type Props = {
+  segments: Segment[];
+};
 
+export function Segments({ segments }: Props) {
   const audioRef = useAtomValue(audioRefAtom);
   const showTranslatedSegmentText = useAtomValue(showTranslatedTextAtom);
   const selectedSegmentIndex = useAtomValue(currentSegmentIndexAtom);
@@ -58,19 +57,6 @@ export function Segments({ segments }: Props) {
     scrollableContainerRef,
     segmentsRef.current,
   );
-
-  useLayoutEffect(() => {
-    if (
-      scrollableContainerRef.current &&
-      topSpacerRef.current &&
-      bottomSpacerRef.current
-    ) {
-      const spacersHeight = scrollableContainerRef.current.clientHeight * 0.7;
-
-      topSpacerRef.current.style.height = `${spacersHeight}px`;
-      bottomSpacerRef.current.style.height = `${spacersHeight}px`;
-    }
-  }, []);
 
   useKeyboardShortcut(["ArrowUp"], (event) => {
     event.preventDefault();
@@ -123,7 +109,7 @@ export function Segments({ segments }: Props) {
           maskSize: "100% 100%",
         }}
       >
-        <li ref={topSpacerRef} className="w-full shrink-0" />
+        <li className="w-full shrink-0 h-[70%]" />
 
         {segments.map((segment, index) => (
           <li
@@ -152,11 +138,8 @@ export function Segments({ segments }: Props) {
           </li>
         ))}
 
-        <li ref={bottomSpacerRef} className="w-full shrink-0" />
+        <li className="w-full shrink-0 h-[70%]" />
       </ul>
-
-      {/* <div className="absolute top-0 left-0 right-0 w-full h-10 shrink-0 bg-gradient-to-t from-background/25 to-background z-10" /> */}
-      {/* <div className="absolute bottom-0 left-0 right-0 w-full h-10 shrink-0 bg-gradient-to-b from-background/25 to-background z-10" /> */}
 
       <PositionDebugger scrollableContainerRef={scrollableContainerRef} />
     </div>
