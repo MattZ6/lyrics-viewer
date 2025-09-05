@@ -5,13 +5,17 @@ import { Languages } from "lucide-react";
 import { useCallback } from "react";
 
 import { showTranslatedTextAtom } from "@/atoms/segment-view";
+
 import { Control } from "@/components/controls/components/control";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+
 import { useKeyboardShortcut } from "@/hooks/use-keyboard-shortcut";
+
+const KEYBOARD_SHORTCUT = "T";
 
 export function TranslationToggleControl() {
   const [showTranslation, toggleTranslationVisibility] = useAtom(
@@ -19,15 +23,18 @@ export function TranslationToggleControl() {
   );
 
   const handleToggle = useCallback(() => {
-    toggleTranslationVisibility(!showTranslation);
-  }, [showTranslation, toggleTranslationVisibility]);
+    toggleTranslationVisibility((value) => !value);
+  }, [toggleTranslationVisibility]);
 
-  useKeyboardShortcut("T", handleToggle);
+  useKeyboardShortcut(KEYBOARD_SHORTCUT, handleToggle);
 
   return (
     <Tooltip>
       <TooltipContent side="left" sideOffset={12}>
         Translation
+        <span className="font-mono text-xs text-white/56 uppercase ml-1">
+          {KEYBOARD_SHORTCUT}
+        </span>
       </TooltipContent>
       <TooltipTrigger asChild>
         <Control
