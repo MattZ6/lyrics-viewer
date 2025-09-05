@@ -6,3 +6,5 @@ export const scrollAnchorAtom = atom(0.5);
 export const scrollAnchorDebuggerActiveAtom = atom(false);
 
 export const showTranslatedTextAtom = atom(true);
+
+export const autoScrollAtom = atom(true);

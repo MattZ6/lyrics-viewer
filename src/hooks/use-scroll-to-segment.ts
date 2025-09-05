@@ -1,9 +1,14 @@
 "use client";
 
-import { useAtomValue } from "jotai";
-import { type RefObject, useCallback, useLayoutEffect, useRef } from "react";
+import { useAtom, useAtomValue } from "jotai";
+import { useIsomorphicLayoutEffect } from "motion/react";
+import { type RefObject, useCallback, useRef } from "react";
 
-import { scrollAnchorAtom, showTranslatedTextAtom } from "@/atoms/segment-view";
+import {
+  autoScrollAtom,
+  scrollAnchorAtom,
+  showTranslatedTextAtom,
+} from "@/atoms/segment-view";
 
 type ScrollToSelectedSegmentInput = {
   animate: boolean;
@@ -14,14 +19,22 @@ export function useScrollToSegment(
   scrollableContainerRef: RefObject<HTMLElement | null>,
   segmentsRef: RefObject<HTMLElement | null>[],
 ) {
+  const [autoScroll, setAutoScroll] = useAtom(autoScrollAtom);
+
   const showTranslatedText = useAtomValue(showTranslatedTextAtom);
   const scrollAnchor = useAtomValue(scrollAnchorAtom);
 
   const isFirstRenderRef = useRef(true);
   const translationEnabledRef = useRef(showTranslatedText);
 
+  const isProgrammaticScroll = useRef(false);
+
   const scrollToSelectedSegment = useCallback(
     ({ animate }: ScrollToSelectedSegmentInput = { animate: false }) => {
+      if (!autoScroll) {
+        return;
+      }
+
       const scrollContainerElement = scrollableContainerRef.current;
       const segmentElement = segmentsRef[selectedSegmentIndex]?.current;
 
@@ -45,12 +58,15 @@ export function useScrollToSegment(
 
       const newScrollPosition = currentScrollTop + offset;
 
+      isProgrammaticScroll.current = true;
+
       scrollContainerElement.scrollTo({
         top: newScrollPosition,
         behavior: animate ? "smooth" : "instant",
       });
     },
     [
+      autoScroll,
       scrollAnchor,
       selectedSegmentIndex,
       scrollableContainerRef,
@@ -58,15 +74,49 @@ export function useScrollToSegment(
     ],
   );
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     scrollToSelectedSegment({ animate: !isFirstRenderRef.current });
   }, [scrollToSelectedSegment]);
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (translationEnabledRef.current !== showTranslatedText) {
       scrollToSelectedSegment({ animate: false });
     }
 
     translationEnabledRef.current = showTranslatedText;
   }, [scrollToSelectedSegment, showTranslatedText]);
+
+  useIsomorphicLayoutEffect(() => {
+    const scrollContainer = scrollableContainerRef.current;
+
+    if (!scrollContainer) {
+      return;
+    }
+
+    let timeout: NodeJS.Timeout | null = null;
+
+    const handleScroll = () => {
+      if (isProgrammaticScroll.current) {
+        if (timeout) {
+          clearTimeout(timeout);
+        }
+
+        timeout = setTimeout(() => {
+          isProgrammaticScroll.current = false;
+        }, 100);
+      } else {
+        setAutoScroll(false);
+
+        if (timeout) {
+          clearTimeout(timeout);
+        }
+      }
+    };
+
+    scrollContainer.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      scrollContainer.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 }
