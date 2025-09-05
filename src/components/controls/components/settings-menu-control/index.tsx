@@ -15,6 +15,7 @@ import {
 import { useWindowSize } from "@/hooks/use-window-size";
 import { PositionDebuggerToggle } from "./components/position-debugger-toggle";
 import { PositionSelector } from "./components/position-selector";
+import { ScrollAnchorToggle } from "./components/scroll-anchor-toggle";
 
 export function SettingsMenuControl() {
   const windowSize = useWindowSize();
@@ -50,6 +51,7 @@ export function SettingsMenuControl() {
         </span>
 
         <PositionSelector />
+        <ScrollAnchorToggle />
 
         <hr className="m-0 border-t border-zinc-700/56" />
 

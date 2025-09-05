@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { ScrollAnchorToggle } from "./components/scroll-anchor-toggle";
 import { SettingsMenuControl } from "./components/settings-menu-control";
 import { TranslationToggleControl } from "./components/translation-toggle-control";
 
@@ -12,6 +13,7 @@ export function Controls() {
     >
       <SettingsMenuControl />
       <TranslationToggleControl />
+      <ScrollAnchorToggle />
     </div>
   );
 }
