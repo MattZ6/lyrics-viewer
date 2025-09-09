@@ -15,6 +15,7 @@ import { cn } from "@/lib/utils";
 import { LyricSegment } from "./components/lyric";
 import { MarkerSegment } from "./components/marker";
 import { PositionDebugger } from "./components/position-debugger";
+import { TrackInfo } from "./components/track-info";
 
 function findPreviousLyric(segments: Segment[], currentIndex: number) {
   for (let i = currentIndex - 1; i >= 0; i--) {
@@ -138,7 +139,11 @@ export function Segments({ segments }: Props) {
           </li>
         ))}
 
-        <li className="w-full shrink-0 h-[70%]" />
+        <li className="shrink-0 w-full h-[70%]"></li>
+
+        <li>
+          <TrackInfo />
+        </li>
       </ul>
 
       <PositionDebugger scrollableContainerRef={scrollableContainerRef} />

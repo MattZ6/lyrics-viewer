@@ -18,11 +18,20 @@ export type LyricSegment = {
 
 export type Segment = MarkerSegment | LyricSegment;
 
+export type Person = {
+  name: string;
+  me?: boolean;
+};
+
 export type Track = {
   id: string;
   title: string;
   band: string;
   thumb: string;
+  album: string;
+  writtenBy: Person[];
+  producedBy: Person[];
+  releasedAt: Date;
   audio: string; // path para mp3
   segments: Segment[];
 };
