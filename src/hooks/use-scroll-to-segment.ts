@@ -4,11 +4,7 @@ import { useAtom, useAtomValue } from "jotai";
 import { useIsomorphicLayoutEffect } from "motion/react";
 import { type RefObject, useCallback, useRef } from "react";
 
-import {
-  autoScrollAtom,
-  scrollAnchorAtom,
-  showTranslatedTextAtom,
-} from "@/atoms/segment-view";
+import { autoScrollAtom, scrollAnchorAtom } from "@/atoms/segment-view";
 
 type ScrollToSelectedSegmentInput = {
   animate: boolean;
@@ -21,11 +17,9 @@ export function useScrollToSegment(
 ) {
   const [autoScroll, setAutoScroll] = useAtom(autoScrollAtom);
 
-  const showTranslatedText = useAtomValue(showTranslatedTextAtom);
   const scrollAnchor = useAtomValue(scrollAnchorAtom);
 
   const isFirstRenderRef = useRef(true);
-  const translationEnabledRef = useRef(showTranslatedText);
 
   const isProgrammaticScroll = useRef(false);
 
