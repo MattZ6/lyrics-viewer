@@ -45,7 +45,7 @@ export const LyricSegment = memo(
         onClick={handleMoveToSegmentTime}
         onFocus={handleFocus}
         className={cn(
-          "flex flex-col items-center text-centerpy-1 py-2 px-3 rounded-lg cursor-pointer transition-all",
+          "flex flex-col items-center text-centerpy-1 py-1.5 px-3 rounded-lg cursor-pointer transition-all",
           "active:scale-98 md:active:scale-100 duration-150 md:duration-200",
           "w-full md:w-fit",
           !isSelected && "hover:bg-zinc-900/50 focus-visible:bg-zinc-900/50",
@@ -56,20 +56,22 @@ export const LyricSegment = memo(
       >
         <span
           className={cn(
-            "font-medium text-lg transition-colors text-zinc-100 text-center select-none",
+            "font-medium text-lg transition-[color,translate] text-zinc-100 text-center select-none",
             "md:text-xl",
             isPast && "text-zinc-700",
             !isPast && !isSelected && "text-zinc-300",
+            !!segment.translatedText && !showTranslation && "translate-y-2",
           )}
         >
           {segment.text}
         </span>
-        {showTranslation && !!segment.translatedText && (
+        {!!segment.translatedText && (
           <span
             className={cn(
-              "font-normal text-xs transition-colors text-zinc-400 text-center select-none",
+              "font-normal text-xs transition-[color,opacity,scale] text-zinc-400 text-center opacity-0 scale-95 select-none",
               "md:text-sm",
               isPast && "text-zinc-700",
+              showTranslation && "opacity-100 scale-100",
             )}
           >
             {segment.translatedText}
