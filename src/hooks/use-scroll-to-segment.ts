@@ -79,14 +79,6 @@ export function useScrollToSegment(
   }, [scrollToSelectedSegment]);
 
   useIsomorphicLayoutEffect(() => {
-    if (translationEnabledRef.current !== showTranslatedText) {
-      scrollToSelectedSegment({ animate: false });
-    }
-
-    translationEnabledRef.current = showTranslatedText;
-  }, [scrollToSelectedSegment, showTranslatedText]);
-
-  useIsomorphicLayoutEffect(() => {
     const scrollContainer = scrollableContainerRef.current;
 
     if (!scrollContainer) {
