@@ -132,6 +132,7 @@ html {
 body {
   height: 100dvh;
   background: linear-gradient(25deg, var(--color-black), var(--color-zinc-800));
+  color: var(--color-white);
 }
 
 /* width */

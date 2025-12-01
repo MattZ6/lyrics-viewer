@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
-import "../styles/global.css";
+
+import "@/styles/global.css";
 
 import { env } from "@/config/env";
 
@@ -20,7 +21,7 @@ type Props = {
 
 export default function RootLayout({ children }: Props) {
   return (
-    <html lang="en">
+    <html lang="en" dir="ltr">
       <body className={`${poppins.className} antialiased`}>{children}</body>
     </html>
   );
