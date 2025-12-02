@@ -3,11 +3,14 @@ import type { NextRequest } from "next/server";
 
 import { env } from "@/config/env";
 
-import { loadGoogleFont } from "@/services/google-fonts/load";
+import {
+  loadPoppinsRegularFontFamily,
+  loadPoppinsSemiBoldFontFamily,
+} from "@/services/google-fonts/load-local";
 
 import { getSongBySlug } from "@/utils/get-song-by-slug";
 
-export const contentType = "image/jpg";
+export const contentType = "image/jpeg";
 export const size = { width: 1200, height: 630 };
 
 type Params = {
@@ -26,7 +29,7 @@ export const GET = async (_: NextRequest, { params }: Props) => {
   if (!song) {
     const text = "Song not found";
 
-    return new ImageResponse(
+    const notFoundImageOG = new ImageResponse(
       <div
         style={{
           fontSize: 48,
@@ -49,22 +52,25 @@ export const GET = async (_: NextRequest, { params }: Props) => {
             name: "Poppins",
             weight: 400,
             style: "normal",
-            data: await loadGoogleFont({
-              font: "Poppins",
-              weight: 400,
-              text: text,
-            }),
+            data: loadPoppinsRegularFontFamily(),
           },
         ],
       },
     );
+
+    notFoundImageOG.headers.append(
+      "Cache-Control",
+      "public, max-age=0, s-maxage=86400, stale-while-revalidate=604800",
+    );
+
+    return notFoundImageOG;
   }
 
   const { name, band, thumbnailUrl } = song;
 
   const absoluteThumbnailUrl = `${env.appUrl}${thumbnailUrl}`;
 
-  return new ImageResponse(
+  const songOg = new ImageResponse(
     <div
       style={{
         width: "100%",
@@ -95,25 +101,24 @@ export const GET = async (_: NextRequest, { params }: Props) => {
           name: "Poppins",
           weight: 600,
           style: "normal",
-          data: await loadGoogleFont({
-            font: "Poppins",
-            weight: 600,
-            text: name,
-          }),
+          data: loadPoppinsSemiBoldFontFamily(),
         },
         {
           name: "Poppins",
           weight: 400,
           style: "normal",
-          data: await loadGoogleFont({
-            font: "Poppins",
-            weight: 400,
-            text: band.name,
-          }),
+          data: loadPoppinsRegularFontFamily(),
         },
       ],
     },
   );
+
+  songOg.headers.append(
+    "Cache-Control",
+    "public, max-age=0, s-maxage=86400, stale-while-revalidate=604800",
+  );
+
+  return songOg;
 };
 
 type OverlayProps = {
@@ -124,10 +129,12 @@ type OverlayProps = {
 function Overlay({ width, height }: OverlayProps) {
   return (
     <div
-      tw={`absolute inset-0 w-[${width}px] h-[${height}px]`}
+      tw="absolute inset-0"
       style={{
+        width,
+        height,
         background:
-          "linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0.2))",
+          "linear-gradient(to right, rgba(0,0,0,0.5), rgba(0,0,0,0.1))",
       }}
     />
   );
@@ -146,8 +153,10 @@ function BlurredBackground({
 }: BlurredBackgroundProps) {
   return (
     <div
-      tw={`absolute inset-0 w-[${width}px] h-[${height}px] opacity-35`}
+      tw="absolute inset-0 opacity-35"
       style={{
+        width,
+        height,
         backgroundImage: `url(${thumbnailUrl})`,
         backgroundSize: "100% 100%",
         backgroundPosition: "center",
@@ -166,7 +175,13 @@ type ImageBuilderProps = {
 
 function ImageBuilder({ songName, bandName, thumbnailUrl }: ImageBuilderProps) {
   return (
-    <div tw="flex items-center p-[60px]">
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        padding: "60px",
+      }}
+    >
       {/** biome-ignore lint/performance/noImgElement: The song thumbnail must be an image tag. */}
       <img
         src={thumbnailUrl}
