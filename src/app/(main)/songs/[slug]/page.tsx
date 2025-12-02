@@ -3,7 +3,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { SONGS } from "@/data/songs";
+import { env } from "@/config/env";
+
+import { getSongBySlug } from "@/utils/get-song-by-slug";
 
 type Params = {
   slug: string;
@@ -16,25 +18,45 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
 
-  const song = SONGS.find(
-    (song) => song.slug.toLowerCase() === slug.toLowerCase(),
-  );
+  const song = getSongBySlug({ slug });
 
   if (!song) {
     return notFound();
   }
 
+  const ogImageUrl = new URL(song.thumbnailUrl, env.appUrl);
+
   return {
     title: song.name,
+    description: `${song.name} • ${song.band.name}`,
+    metadataBase: new URL(env.appUrl),
+    openGraph: {
+      title: song.name,
+      description: `${song.name} • ${song.band.name}`,
+      type: "website",
+      url: `/songs/${song.slug}`,
+      images: [
+        {
+          url: ogImageUrl,
+          width: 1200,
+          height: 630,
+          alt: song.name,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: song.name,
+      description: `${song.name} • ${song.band.name}`,
+      images: [ogImageUrl],
+    },
   };
 }
 
 export default async function SongPage({ params }: Props) {
   const { slug } = await params;
 
-  const song = SONGS.find(
-    (song) => song.slug.toLowerCase() === slug.toLowerCase(),
-  );
+  const song = getSongBySlug({ slug });
 
   if (!song) {
     return notFound();
