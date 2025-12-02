@@ -7,7 +7,6 @@ import { loadGoogleFont } from "@/services/google-fonts/load";
 
 import { getSongBySlug } from "@/utils/get-song-by-slug";
 
-export const runtime = "edge";
 export const contentType = "image/jpg";
 export const size = { width: 1200, height: 630 };
 
