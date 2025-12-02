@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return notFound();
   }
 
-  const ogImageUrl = new URL(song.thumbnailUrl, env.appUrl);
+  const ogImageUrl = new URL(`/api/og/songs/${song.slug}`, env.appUrl);
 
   return {
     title: song.name,
