@@ -1,14 +1,29 @@
-import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
-
 import "@/styles/global.css";
+
+import type { Metadata } from "next";
+import localFont from "next/font/local";
 
 import { env } from "@/config/env";
 
-const poppins = Poppins({
-  weight: ["400", "500", "600"],
-  subsets: ["latin"],
-  style: "normal",
+const poppins = localFont({
+  src: [
+    {
+      path: "../../public/fonts/poppins/Poppins-Regular.ttf",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../../public/fonts/poppins/Poppins-Medium.ttf",
+      weight: "500",
+      style: "normal",
+    },
+    {
+      path: "../../public/fonts/poppins/Poppins-SemiBold.ttf",
+      weight: "600",
+      style: "normal",
+    },
+  ],
+  variable: "--font-poppins",
 });
 
 export const metadata: Metadata = {
