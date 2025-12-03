@@ -1,6 +1,6 @@
 {
   "name": "lyricsviewer",
-  "version": "0.5.2-beta",
+  "version": "0.5.3-beta",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
