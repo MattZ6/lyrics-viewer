@@ -6,6 +6,15 @@ import { notFound } from "next/navigation";
 import { env } from "@/config/env";
 
 import { getSongBySlug } from "@/utils/get-song-by-slug";
+import { getSongsSlugs } from "@/utils/get-songs-slugs";
+
+export function generateStaticParams() {
+  const slugs = getSongsSlugs();
+
+  return slugs.map((slug) => ({
+    slug,
+  }));
+}
 
 type Params = {
   slug: string;
