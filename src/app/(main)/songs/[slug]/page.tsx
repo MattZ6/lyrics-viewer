@@ -3,13 +3,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { LyricsPanel } from "@/components/lyrics/panel";
+
 import { env } from "@/config/env";
 
 import { getSongBySlug } from "@/utils/get-song-by-slug";
-import { getSongsSlugs } from "@/utils/get-songs-slugs";
 
 export function generateStaticParams() {
-  const slugs = getSongsSlugs();
+  const slugs = ["privilegio", "melhor-do-que-antes"];
 
   return slugs.map((slug) => ({
     slug,
@@ -85,6 +86,8 @@ export default async function SongPage({ params }: Props) {
           {song.name}
         </h1>
       </header>
+
+      <LyricsPanel slug={song.slug} />
     </main>
   );
 }
