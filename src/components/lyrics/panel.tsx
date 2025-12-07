@@ -14,18 +14,33 @@ type LyricSegment = {
 
 type Segment = MarkerSegment | LyricSegment;
 
-const lyricsMap: Record<string, () => Promise<{ default: Segment[] }>> = {
-  privilegio: () => import("@/data/lyrics/privilegio/segments.json"),
-  "melhor-do-que-antes": () =>
-    import("@/data/lyrics/melhor-do-que-antes/segments.json"),
+type Output = {
+  default: Segment[];
+};
+
+const lyricsMap: Record<string, () => Promise<Output>> = {
+  privilegio: async () => {
+    const lyricsModule = await import("@/data/lyrics/privilegio/segments.json");
+    return lyricsModule as Output;
+  },
+  "melhor-do-que-antes": async () => {
+    const lyricsModule = await import(
+      "@/data/lyrics/melhor-do-que-antes/segments.json"
+    );
+    return lyricsModule as Output;
+  },
 };
 
 async function getLyrics(slug: string) {
   try {
     const loader = lyricsMap[slug];
-    if (!loader) return null;
+
+    if (!loader) {
+      return null;
+    }
 
     const module = await loader();
+
     return module.default;
   } catch (error) {
     console.error(error);
