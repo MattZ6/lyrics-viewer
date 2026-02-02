@@ -1,5 +1,6 @@
 import "@/styles/global.css";
 
+import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 
@@ -37,7 +38,10 @@ type Props = {
 export default function RootLayout({ children }: Props) {
   return (
     <html lang="en" dir="ltr">
-      <body className={`${poppins.className} antialiased`}>{children}</body>
+      <body className={`${poppins.className} antialiased`}>
+        {children}
+        <Analytics />
+      </body>
     </html>
   );
 }
